@@ -3,6 +3,7 @@ import './App.css';
 import mapboxgl from 'mapbox-gl';
 import mbxGeocoding from '@mapbox/mapbox-sdk/services/geocoding';
 import * as CoffeePlaces from './CoffeePlaces';
+import List from './List';
 //var mbxGeocoding = require('@mapbox/mapbox-gl-geocoder');
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
@@ -14,7 +15,9 @@ class App extends Component {
     this.state = {
       lng: -74.0226071,
       lat: 40.7786204,
-      zoom: 9.5
+      // TODO: zoom out further for smaller screen (use mapbox property expression?)
+      zoom: 9.5,
+      items: ''
     };
   }
 
@@ -32,7 +35,7 @@ class App extends Component {
     });
 
     // create empty feature collection
-    const geojson = {
+    let geojson = {
       type: 'FeatureCollection',
       features: []
     };
@@ -59,10 +62,16 @@ class App extends Component {
             }
             // push feature object to feature collection
             geojson.features.push(feature);
+
+            this.setState({
+              items: geojson
+            })
+
           } else {
             return ;
           }
 
+          
           // create and add a marker for each location to the map
           geojson.features.forEach((location) => {
             new mapboxgl.Marker()
@@ -71,16 +80,21 @@ class App extends Component {
                 .setHTML(`<h3>${location.properties.title}</h3><p>${location.properties.description}</p>`))
               .addTo(map);
           });
+          
 
         });
     })
   }
 
   render() {
+
     /* ref instead of id? */
     return (
       <div>
         <div id="map"></div>
+        <div className='sidebar pad2'>
+          <List items={ this.state.items.length !== 0 ? this.state.items : '' }></List>
+        </div>
       </div>
 
     );
