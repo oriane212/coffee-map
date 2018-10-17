@@ -19,7 +19,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    
+
     // get current values stored in state
     const { lng, lat, zoom } = this.state;
 
@@ -31,31 +31,65 @@ class App extends Component {
       zoom
     });
 
-    let locations = []; //let locations = [[-74.02, 40.77], [-73.2, 41.5]];
+    // coffee places
+    const coffeePlaces = [
+      {
+        name: 'Madman Espresso',
+        type: 'cafe',
+        address: '54 University Pl, New York, NY 10003'
+      },
+      {
+        name: 'Allendale Eats',
+        type: 'diner',
+        address: '101 w allendale ave, allendale, new jersey 07401'
+      }
+    ]
+
+    // create empty feature collection
+    const geojson = {
+      type: 'FeatureCollection',
+      features: []
+    };
 
     // create geocoding client
     const geocodingClient = mbxGeocoding({ accessToken: mapboxgl.accessToken });
 
-    // geocode location
-    // TODO: handle more than one location (handle more than one promise)
-    geocodingClient.forwardGeocode({
-      query: 'New York, NY',
-      limit: 2
-    })
-      .send()
-      .then(response => {
-        const match = response.body;
-        locations.push(match.features[0].center);
-        // update state with geocoded locations
-        this.setState({
-          locations_geocoded: locations
-        })
-        // create and add a marker for each location to the map
-        this.state.locations_geocoded.forEach((location) => {
-          new mapboxgl.Marker().setLngLat(location).addTo(map);
-        });
+    // forward geocode each coffee place address
+    coffeePlaces.forEach((place) => {
+      geocodingClient.forwardGeocode({
+        query: place.address,
+        limit: 1
+      })
+        .send()
+        .then(response => {
+          // store feature object
+          const feature = response.body.features[0];
+          // add title and description properties
+          feature.properties = {
+            title: place.name,
+                  description: place.type
+          }
+          // push feature object to feature collection
+          geojson.features.push(feature);
 
-      });
+          // TODO: handle more than one promise before setting state?
+          // TODO: move to componentDidUpdate?
+
+          // update state with geocoded locations
+          this.setState({
+            locations_geocoded: geojson.features
+          })
+          // create and add a marker for each location to the map
+          this.state.locations_geocoded.forEach((location) => {
+            new mapboxgl.Marker()
+              .setLngLat(location.geometry.coordinates)
+              .setPopup(new mapboxgl.Popup({ offset: 25 })
+              .setHTML(`<h3>${location.properties.title}</h3><p>${location.properties.description}</p>`))
+              .addTo(map);
+          });
+
+        });
+    })
   }
 
   render() {
