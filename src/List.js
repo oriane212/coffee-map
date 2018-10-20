@@ -8,11 +8,11 @@ class List extends Component {
         super(props);
     }
 
-    createList(geojson) {
+    createList(markers) {
         let list =
-            geojson.features.map((feature) => {
+            markers.map((marker) => {
           return (
-            <div>{feature.properties.title}</div>
+            <div onClick={(item) => this.props.itemClick(marker.name, item)}>{marker.name}</div>
           )
           })
         return list;
@@ -21,9 +21,10 @@ class List extends Component {
       render() {
 
         let listDivs = '';
-        console.log(this.props.items);
-        if (this.props.items !== '') {
-            listDivs = this.createList(this.props.items);
+        console.log(this.props.markers);
+
+        if (this.props.markers !== []) {
+            listDivs = this.createList(this.props.markers);
         }
         
         return (

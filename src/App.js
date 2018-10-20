@@ -16,9 +16,36 @@ class App extends Component {
       lng: -74.0226071,
       lat: 40.7786204,
       // TODO: zoom out further for smaller screen (use mapbox property expression?)
-      zoom: 9.5,
-      items: ''
+      zoom: 8.5,
+      items: '',
+      markers: []
     };
+
+    this.itemClick = this.itemClick.bind(this);
+  }
+
+  /**
+   * Toggles popup for marker matching list item clicked
+   * @param {string} marker_name 
+   * 
+   */
+  itemClick(list_item) {
+    this.state.markers.forEach((markerObj) => {
+      // open popup for marker matching clicked list item
+      if (markerObj.name === list_item) {
+        markerObj.marker.togglePopup();
+      } 
+      // close any other open marker popups
+      else if (markerObj.name !== list_item) {
+        // get popup bound to marker
+        let mp = markerObj.marker.getPopup();
+        // close popup if already open
+        if (mp.isOpen() === true) {
+          markerObj.marker.togglePopup();
+        }
+      }
+    })
+
   }
 
   componentDidMount() {
@@ -68,19 +95,30 @@ class App extends Component {
             })
 
           } else {
-            return ;
+            return;
           }
 
-          
-          // create and add a marker for each location to the map
+
+          // create array of markers
+          let markers = [];
+
+          // create a marker for each location, add to the map, and push object containing marker to markers array
           geojson.features.forEach((location) => {
-            new mapboxgl.Marker()
+            let marker = new mapboxgl.Marker()
               .setLngLat(location.geometry.coordinates)
               .setPopup(new mapboxgl.Popup({ offset: 25 })
                 .setHTML(`<h3>${location.properties.title}</h3><p>${location.properties.description}</p>`))
               .addTo(map);
+            markers.push({ 
+              name: location.properties.title, 
+              marker: marker 
+            });
           });
-          
+
+          // store array of markers in state
+          this.setState({
+            markers: markers
+          })
 
         });
     })
@@ -93,7 +131,7 @@ class App extends Component {
       <div>
         <div id="map"></div>
         <div className='sidebar pad2'>
-          <List items={ this.state.items.length !== 0 ? this.state.items : '' }></List>
+          <List itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
         </div>
       </div>
 
