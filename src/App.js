@@ -21,8 +21,9 @@ class App extends Component {
       items: '',
       markers: [],
       filters: [
-        { category: 'restaurant', show: true },
-        { category: 'cafe', show: true }]
+        { category: 'cafe', show: true },
+        { category: 'restaurant', show: true }
+        ]
     };
 
     this.itemClick = this.itemClick.bind(this);
@@ -58,13 +59,23 @@ class App extends Component {
   handleInputChange(filter, event) {
     
     const filtered = this.state.filters.filter(item => item.category !== filter.category);
-
     const modified = {category: filter.category, show: !filter.show};
     filtered.push(modified);
   
     this.setState({
       filters: filtered
     })
+/*
+    this.setState((prevState) => ({
+      //filters: prevState.filters.filter(item => item.category !== filter.category)
+      filters: prevState.filters.forEach((obj) => {
+        if(obj.category === filter.category) {
+          obj.show = !filter.show
+        }
+        
+      })
+    }))
+    */
 
   }
 

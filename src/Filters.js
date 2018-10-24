@@ -19,14 +19,27 @@ class Filters extends Component {
             )
         })
 
+        // keep filter items in alphabetical order
+        filterList.sort(function(a,b) {
+            if(a.key < b.key) {
+                return -1;
+            }
+            if(a.key > b.key) {
+                return 1;
+            }
+            return 0;
+        });
+
         return filterList;
     }
 
     render() {
 
         let filterListDivs = '';
-        filterListDivs = this.createList();
-
+        if(this.props.filters !== []) {
+            filterListDivs = this.createList();
+        }
+        
         return (
             <div>
                 {filterListDivs}
