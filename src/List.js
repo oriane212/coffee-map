@@ -12,7 +12,7 @@ class List extends Component {
         let list =
             markers.map((marker) => {
           return (
-            <div onClick={(item) => this.props.itemClick(marker.name, item)}>{marker.name}</div>
+            <div key={marker.name} onClick={(item) => this.props.itemClick(marker.name, item)}>{marker.name}</div>
           )
           })
         return list;
@@ -21,8 +21,6 @@ class List extends Component {
       render() {
 
         let listDivs = '';
-        console.log(this.props.markers);
-
         if (this.props.markers !== []) {
             listDivs = this.createList(this.props.markers);
         }
