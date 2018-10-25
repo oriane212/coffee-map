@@ -5,6 +5,7 @@ import mbxGeocoding from '@mapbox/mapbox-sdk/services/geocoding';
 import * as CoffeePlaces from './CoffeePlaces';
 import List from './List';
 import Filters from './Filters';
+import Select from './Select';
 //var mbxGeocoding = require('@mapbox/mapbox-gl-geocoder');
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
@@ -21,13 +22,15 @@ class App extends Component {
       items: '',
       markers: [],
       filters: [
-        { category: 'cafe', show: true },
-        { category: 'restaurant', show: true }
-        ]
+        { category: 'Cafe', show: true },
+        { category: 'Restaurant', show: true }
+      ],
+      selection: 'All'
     };
 
     this.itemClick = this.itemClick.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.onSelection = this.onSelection.bind(this);
   }
 
   /**
@@ -54,29 +57,23 @@ class App extends Component {
 
   }
 
-  
 
   handleInputChange(filter, event) {
-    
+
     const filtered = this.state.filters.filter(item => item.category !== filter.category);
-    const modified = {category: filter.category, show: !filter.show};
+    const modified = { category: filter.category, show: !filter.show };
     filtered.push(modified);
-  
+
     this.setState({
       filters: filtered
     })
-/*
-    this.setState((prevState) => ({
-      //filters: prevState.filters.filter(item => item.category !== filter.category)
-      filters: prevState.filters.forEach((obj) => {
-        if(obj.category === filter.category) {
-          obj.show = !filter.show
-        }
-        
-      })
-    }))
-    */
 
+  }
+
+  onSelection(event) {
+    this.setState({
+      selection: event.target.value
+    })
   }
 
   componentDidMount() {
@@ -134,17 +131,19 @@ class App extends Component {
 
           // create a marker for each location, add to the map, and push object containing marker to markers array
           geojson.features.forEach((location) => {
-            let marker = new mapboxgl.Marker()
-              .setLngLat(location.geometry.coordinates)
-              .setPopup(new mapboxgl.Popup({ offset: 25 })
-                .setHTML(`<h3>${location.properties.title}</h3><p>${location.properties.description}</p>`))
-              .addTo(map);
-            markers.push({
-              name: location.properties.title,
-              category: location.properties.description,
-              marker: marker
+
+                let marker = new mapboxgl.Marker()
+                  .setLngLat(location.geometry.coordinates)
+                  .setPopup(new mapboxgl.Popup({ offset: 25 })
+                    .setHTML(`<h3>${location.properties.title}</h3><p>${location.properties.description}</p>`))
+                  .addTo(map);
+                markers.push({
+                  name: location.properties.title,
+                  category: location.properties.description,
+                  marker: marker
+                });
+        
             });
-          });
 
           // store array of markers in state
           this.setState({
@@ -162,8 +161,8 @@ class App extends Component {
       <div>
         <div id="map"></div>
         <div className='sidebar pad2'>
-          <Filters handleInputChange={this.handleInputChange} filters={this.state.filters}></Filters>
-          <List itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
+          <Select selection={this.state.selection} onSelection={this.onSelection}></Select>
+          <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
         </div>
 
       </div>

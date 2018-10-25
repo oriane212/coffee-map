@@ -2,12 +2,12 @@
 export const coffeePlaces = [
     {
       name: 'Madman Espresso',
-      type: 'cafe',
+      type: 'Cafe',
       address: '54 University Pl, New York, NY 10003'
     },
     {
       name: 'Allendale Eats',
-      type: 'diner',
+      type: 'Restaurant',
       address: '101 w allendale ave, allendale, new jersey 07401'
     }
   ]
