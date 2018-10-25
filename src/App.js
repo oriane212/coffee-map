@@ -82,7 +82,7 @@ class App extends Component {
     const { lng, lat, zoom } = this.state;
 
     // initialize map object
-    const map = new mapboxgl.Map({
+    this.map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v9',
       center: [lng, lat],
@@ -129,14 +129,13 @@ class App extends Component {
           // create array of markers
           let markers = [];
 
-          // create a marker for each location, add to the map, and push object containing marker to markers array
+          // create a marker for each location and push object containing marker instance to array
           geojson.features.forEach((location) => {
 
                 let marker = new mapboxgl.Marker()
                   .setLngLat(location.geometry.coordinates)
                   .setPopup(new mapboxgl.Popup({ offset: 25 })
                     .setHTML(`<h3>${location.properties.title}</h3><p>${location.properties.description}</p>`))
-                  .addTo(map);
                 markers.push({
                   name: location.properties.title,
                   category: location.properties.description,
@@ -155,6 +154,22 @@ class App extends Component {
   }
 
   render() {
+
+    // filter and add markers to map
+    if (this.state.selection !== 'All') {
+      this.state.markers.forEach((markerObj) => {
+        if (this.state.selection === markerObj.category) {
+          markerObj.marker.addTo(this.map);
+        } else {
+          markerObj.marker.remove();
+        }
+      })
+    } else {
+      this.state.markers.forEach((markerObj) => {
+        markerObj.marker.addTo(this.map);
+      })
+    }
+    
 
     /* ref instead of id? */
     return (
