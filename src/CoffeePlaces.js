@@ -7,7 +7,7 @@ export const coffeePlaces = [
     },
     {
       name: 'Allendale Eats',
-      type: 'Restaurant',
+      type: 'Diner',
       address: '101 w allendale ave, allendale, new jersey 07401'
     }
   ]

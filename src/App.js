@@ -19,12 +19,12 @@ class App extends Component {
       lat: 40.7786204,
       // TODO: zoom out further for smaller screen (use mapbox property expression?)
       zoom: 8.5,
-      items: '',
+      //items: '',
       markers: [],
-      filters: [
+      /*filters: [
         { category: 'Cafe', show: true },
         { category: 'Restaurant', show: true }
-      ],
+      ],*/
       selection: 'All'
     };
 
@@ -57,23 +57,23 @@ class App extends Component {
 
   }
 
-
-  handleInputChange(filter, event) {
-
-    const filtered = this.state.filters.filter(item => item.category !== filter.category);
-    const modified = { category: filter.category, show: !filter.show };
-    filtered.push(modified);
-
-    this.setState({
-      filters: filtered
-    })
-
-  }
+    handleInputChange(filter, event) {
+  
+      const filtered = this.state.filters.filter(item => item.category !== filter.category);
+      const modified = { category: filter.category, show: !filter.show };
+      filtered.push(modified);
+  
+      this.setState({
+        filters: filtered
+      })
+  
+    }
 
   onSelection(event) {
     this.setState({
       selection: event.target.value
     })
+
   }
 
   componentDidMount() {
@@ -89,87 +89,87 @@ class App extends Component {
       zoom
     });
 
-    // create empty feature collection
-    let geojson = {
-      type: 'FeatureCollection',
-      features: []
-    };
-
     // create geocoding client
     const geocodingClient = mbxGeocoding({ accessToken: mapboxgl.accessToken });
 
+    // array to store promises
+    let promises = [];
+
     // forward geocode each coffee place address
     CoffeePlaces.coffeePlaces.forEach((place) => {
-      geocodingClient.forwardGeocode({
-        query: place.address,
-        limit: 1
-      })
-        .send()
-        .then(response => {
-          if (response != null && response.error == null) {
-            // store feature object
-            const feature = response.body.features[0];
-            // add title and description properties
-            feature.properties = {
-              title: place.name,
-              description: place.type
+      // store each promise for feature object containing geocoded address
+      let eachPromise = (
+        geocodingClient.forwardGeocode({
+          query: place.address,
+          limit: 1
+        })
+          .send()
+          .then((response) => {
+            if (response != null && response.error == null) {
+              // store feature object
+              const feature = response.body.features[0];
+              // add title and description properties
+              feature.properties = {
+                title: place.name,
+                description: place.type
+              }
+              return feature;
+            } else {
+              return;
             }
-            // push feature object to feature collection
-            geojson.features.push(feature);
-
-            this.setState({
-              items: geojson
-            })
-
-          } else {
-            return;
-          }
-
-
-          // create array of markers
-          let markers = [];
-
-          // create a marker for each location and push object containing marker instance to array
-          geojson.features.forEach((location) => {
-
-                let marker = new mapboxgl.Marker()
-                  .setLngLat(location.geometry.coordinates)
-                  .setPopup(new mapboxgl.Popup({ offset: 25 })
-                    .setHTML(`<h3>${location.properties.title}</h3><p>${location.properties.description}</p>`))
-                markers.push({
-                  name: location.properties.title,
-                  category: location.properties.description,
-                  marker: marker
-                });
-        
-            });
-
-          // store array of markers in state
-          this.setState({
-            markers: markers
           })
-
-        });
+      )
+      // store each promise in promises array
+      promises.push(eachPromise);
     })
+
+    // return promises
+    Promise.all(promises).then((promises) => {
+
+      // create array to store markers
+      let markers = [];
+
+      // create a marker instance for each feature object
+      promises.forEach((feature) => {
+
+        let marker = new mapboxgl.Marker()
+          .setLngLat(feature.geometry.coordinates)
+          .setPopup(new mapboxgl.Popup({ offset: 25 })
+            .setHTML(`<h3>${feature.properties.title}</h3><p>${feature.properties.description}</p>`))
+
+        // create object containing marker instance and push to array of markers
+        markers.push({
+          name: feature.properties.title,
+          category: feature.properties.description,
+          marker: marker
+        });
+
+      })
+
+      // store array of markers in state
+      this.setState({
+        markers: markers
+      })
+
+    });
+
   }
 
   render() {
 
     // filter and add markers to map
-    if (this.state.selection !== 'All') {
-      this.state.markers.forEach((markerObj) => {
+    this.state.markers.forEach((markerObj) => {
+      if (this.state.selection !== 'All') {
         if (this.state.selection === markerObj.category) {
           markerObj.marker.addTo(this.map);
         } else {
           markerObj.marker.remove();
         }
-      })
-    } else {
-      this.state.markers.forEach((markerObj) => {
+      } else {
         markerObj.marker.addTo(this.map);
-      })
-    }
-    
+      }
+    })
+
 
     /* ref instead of id? */
     return (

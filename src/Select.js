@@ -6,7 +6,7 @@ class Select extends Component {
     render() {
 
         const categories = [
-            'All', 'Cafe', 'Restaurant'
+            'All', 'Cafe', 'Diner'
         ]
 
         return (
