@@ -7,6 +7,11 @@ import List from './List';
 import Filters from './Filters';
 import Select from './Select';
 //var mbxGeocoding = require('@mapbox/mapbox-gl-geocoder');
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faCoffee)
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
 
@@ -179,6 +184,7 @@ class App extends Component {
           <Select selection={this.state.selection} onSelection={this.onSelection}></Select>
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
         </div>
+        <FontAwesomeIcon icon="coffee" />
 
       </div>
 
