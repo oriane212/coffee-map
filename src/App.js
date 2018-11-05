@@ -19,6 +19,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+    this.markerRef = React.createRef();
     this.state = {
       lng: -74.0226071,
       lat: 40.7786204,
@@ -133,11 +134,17 @@ class App extends Component {
 
       // create array to store markers
       let markers = [];
+      
 
       // create a marker instance for each feature object
       promises.forEach((feature) => {
 
-        let marker = new mapboxgl.Marker()
+        // TODO: switch to use this.markerRef?
+        // TODO: include attribution
+        const el = document.createElement('div');
+        el.className = 'marker';
+
+        let marker = new mapboxgl.Marker(el)
           .setLngLat(feature.geometry.coordinates)
           .setPopup(new mapboxgl.Popup({ offset: 25 })
             .setHTML(`<h3>${feature.properties.title}</h3><p>${feature.properties.description}</p>`))
@@ -185,6 +192,7 @@ class App extends Component {
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
         </div>
         <FontAwesomeIcon icon="coffee" />
+        
 
       </div>
 
