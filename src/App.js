@@ -19,7 +19,12 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.markerRef = React.createRef();
+    this.markerRef = [];
+    this.totalMarkers = 2;
+    // create an array of refs for each marker from total number of markers expected
+    for (let i=0; i<this.totalMarkers; i++) {
+      this.markerRef.push(React.createRef());
+    }
     this.state = {
       lng: -74.0226071,
       lat: 40.7786204,
@@ -63,17 +68,17 @@ class App extends Component {
 
   }
 
-    handleInputChange(filter, event) {
-  
-      const filtered = this.state.filters.filter(item => item.category !== filter.category);
-      const modified = { category: filter.category, show: !filter.show };
-      filtered.push(modified);
-  
-      this.setState({
-        filters: filtered
-      })
-  
-    }
+  handleInputChange(filter, event) {
+
+    const filtered = this.state.filters.filter(item => item.category !== filter.category);
+    const modified = { category: filter.category, show: !filter.show };
+    filtered.push(modified);
+
+    this.setState({
+      filters: filtered
+    })
+
+  }
 
   onSelection(event) {
     this.setState({
@@ -134,17 +139,14 @@ class App extends Component {
 
       // create array to store markers
       let markers = [];
-      
 
+      let i = 0;
       // create a marker instance for each feature object
       promises.forEach((feature) => {
 
-        // TODO: switch to use this.markerRef?
         // TODO: include attribution
-        const el = document.createElement('div');
-        el.className = 'marker';
-
-        let marker = new mapboxgl.Marker(el)
+        // pass custom marker DOM element attached to marker reference at index
+        let marker = new mapboxgl.Marker(this.markerRef[i].current)
           .setLngLat(feature.geometry.coordinates)
           .setPopup(new mapboxgl.Popup({ offset: 25 })
             .setHTML(`<h3>${feature.properties.title}</h3><p>${feature.properties.description}</p>`))
@@ -155,6 +157,8 @@ class App extends Component {
           category: feature.properties.description,
           marker: marker
         });
+
+        i++;
 
       })
 
@@ -182,6 +186,8 @@ class App extends Component {
       }
     })
 
+    //
+    let n = 0;
 
     /* ref instead of id? */
     return (
@@ -191,9 +197,18 @@ class App extends Component {
           <Select selection={this.state.selection} onSelection={this.onSelection}></Select>
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
         </div>
-        <FontAwesomeIcon icon="coffee" />
-        
 
+        {
+          // create DOM element with ref for each marker to be rendered
+          this.markerRef.map((reference) => {
+            n++;
+            return (
+              <div className='marker' key={n} ref={reference} />
+            )
+          })
+        }
+
+        <FontAwesomeIcon icon="coffee" />
       </div>
 
     );
