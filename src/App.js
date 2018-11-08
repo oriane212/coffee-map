@@ -20,7 +20,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.markerRef = [];
-    this.totalMarkers = 2;
+    this.totalMarkers = 17;
     // create an array of refs for each marker from total number of markers expected
     for (let i=0; i<this.totalMarkers; i++) {
       this.markerRef.push(React.createRef());

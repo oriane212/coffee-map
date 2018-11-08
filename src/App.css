@@ -56,8 +56,8 @@
 .marker {
   background-image: url('coffee-solid.svg');
   background-size: cover;
-  width: 25px;
-  height: 20px;
+  width: 18px;
+  height: 14px;
   cursor: pointer;
 }
 
