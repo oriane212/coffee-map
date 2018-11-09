@@ -40,18 +40,31 @@ class App extends Component {
     };
 
     this.itemClick = this.itemClick.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
+    //this.handleInputChange = this.handleInputChange.bind(this);
     this.onSelection = this.onSelection.bind(this);
+    this.recenterMap = this.recenterMap.bind(this);
     this.zoomTo = this.zoomTo.bind(this);
   }
 
+  /**
+   * Recenters the map and resets zoom level to default
+   */
+  recenterMap() {
+    this.map.flyTo({
+      center: [
+        this.state.lng,
+        this.state.lat
+      ],
+      zoom: this.state.zoom
+    })
+  }
 
   /**
    * Zooms in and center map to marker location using Mapbox map object's flyTo method
    * @param {obj} markerObj containing marker instance
    * 
    */
-  zoomTo(markerObj){
+  zoomTo(markerObj) {
     this.map.flyTo({
       center: [
         markerObj.marker._lngLat.lng, 
@@ -89,23 +102,21 @@ class App extends Component {
 
   }
 
+  /* unused function
   handleInputChange(filter, event) {
-
     const filtered = this.state.filters.filter(item => item.category !== filter.category);
     const modified = { category: filter.category, show: !filter.show };
     filtered.push(modified);
-
     this.setState({
       filters: filtered
     })
-
-  }
+  }*/
 
   onSelection(event) {
     this.setState({
       selection: event.target.value
     })
-
+    this.recenterMap();
   }
 
   componentDidMount() {
