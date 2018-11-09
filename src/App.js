@@ -75,18 +75,34 @@ class App extends Component {
   }
 
   /**
-   * Toggles popup for marker matching list item clicked
+   * Toggles list item styling and popup for marker matching list item clicked
    * @param {string} marker_name 
    * 
    */
-  itemClick(list_item) {
+  itemClick(list_item, item) {
+
+    // remove any toggled open styling among list items
+    const items = item.target.parentNode.children;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].className === `list-item open`) {
+        items[i].className = `list-item`;
+      }
+    }
+    
     this.state.markers.forEach((markerObj) => {
+      
       // open popup for marker matching clicked list item
       if (markerObj.name === list_item) {
         // zoom in and center map on marker location
         this.zoomTo(markerObj);
         // toggle popup
         markerObj.marker.togglePopup();
+        // get popup bound to marker
+        let mp = markerObj.marker.getPopup();
+        // toggle open list item if popup is open
+        if (mp.isOpen() === true) {
+          item.target.className = `list-item open`;
+        }
         
       }
       // close any other open marker popups
