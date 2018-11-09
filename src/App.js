@@ -26,10 +26,10 @@ class App extends Component {
       this.markerRef.push(React.createRef());
     }
     this.state = {
-      lng: -74.0226071,
-      lat: 40.7786204,
+      lng: -73.8226071,
+      lat: 40.6786204,
       // TODO: zoom out further for smaller screen (use mapbox property expression?)
-      zoom: 8.5,
+      zoom: 7,
       //items: '',
       markers: [],
       /*filters: [
@@ -42,6 +42,23 @@ class App extends Component {
     this.itemClick = this.itemClick.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.onSelection = this.onSelection.bind(this);
+    this.zoomTo = this.zoomTo.bind(this);
+  }
+
+
+  /**
+   * Zooms in and center map to marker location using Mapbox map object's flyTo method
+   * @param {obj} markerObj containing marker instance
+   * 
+   */
+  zoomTo(markerObj){
+    this.map.flyTo({
+      center: [
+        markerObj.marker._lngLat.lng, 
+        markerObj.marker._lngLat.lat
+      ], 
+      zoom: 9
+    })
   }
 
   /**
@@ -53,7 +70,11 @@ class App extends Component {
     this.state.markers.forEach((markerObj) => {
       // open popup for marker matching clicked list item
       if (markerObj.name === list_item) {
+        // zoom in and center map on marker location
+        this.zoomTo(markerObj);
+        // toggle popup
         markerObj.marker.togglePopup();
+        
       }
       // close any other open marker popups
       else if (markerObj.name !== list_item) {
