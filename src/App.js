@@ -15,6 +15,12 @@ library.add(faCoffee)
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
 
+// Foursquare IDs for this app
+const CLIENT_ID = 'PPYFQDE4ES3RAZHYQRKXI0RPWURQ1RPIAIU3VHENMNSKEX1S';
+// TODO: make private?
+const CLIENT_SECRET = 'XAWDVQKUAC1OBT5JUSALYUJTN34FA3H5YZPTFN3145OUM5CL';
+
+
 class App extends Component {
 
   constructor(props) {
@@ -22,7 +28,7 @@ class App extends Component {
     this.markerRef = [];
     this.totalMarkers = 17;
     // create an array of refs for each marker from total number of markers expected
-    for (let i=0; i<this.totalMarkers; i++) {
+    for (let i = 0; i < this.totalMarkers; i++) {
       this.markerRef.push(React.createRef());
     }
     this.state = {
@@ -67,9 +73,9 @@ class App extends Component {
   zoomTo(markerObj) {
     this.map.flyTo({
       center: [
-        markerObj.marker._lngLat.lng, 
+        markerObj.marker._lngLat.lng,
         markerObj.marker._lngLat.lat
-      ], 
+      ],
       zoom: 9
     })
   }
@@ -88,9 +94,9 @@ class App extends Component {
         items[i].className = `list-item`;
       }
     }
-    
+
     this.state.markers.forEach((markerObj) => {
-      
+
       // open popup for marker matching clicked list item
       if (markerObj.name === list_item) {
         // zoom in and center map on marker location
@@ -103,7 +109,7 @@ class App extends Component {
         if (mp.isOpen() === true) {
           item.target.className = `list-item open`;
         }
-        
+
       }
       // close any other open marker popups
       else if (markerObj.name !== list_item) {
@@ -198,6 +204,19 @@ class App extends Component {
           .setLngLat(feature.geometry.coordinates)
           .setPopup(new mapboxgl.Popup({ offset: 25 })
             .setHTML(`<h3>${feature.properties.title}</h3><p>${feature.properties.description}</p>`))
+        
+        // fetch data for venue using Foursquare's Places API search
+        fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=1&ll=${marker._lngLat.lat},${marker._lngLat.lng}&query=${feature.properties.title}`)
+          .then((response) => {
+            return response.json();
+          })
+          .then((myJson) => {
+            // log name of venue from response object
+            console.log(myJson.response.venues[0].name);
+          })
+          .catch(function () {
+            console.log('error');
+          });
 
         // create object containing marker instance and push to array of markers
         markers.push({
