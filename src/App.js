@@ -188,11 +188,11 @@ class App extends Component {
       promises.push(eachPromise);
     })
 
+    // create array to store markers
+    let markers = [];
+
     // return promises
     Promise.all(promises).then((promises) => {
-
-      // create array to store markers
-      let markers = [];
 
       let i = 0;
       // create a marker instance for each feature object
@@ -213,19 +213,24 @@ class App extends Component {
           vID: '',
           photo: []
         }
+        
+        
 
-          // fetch data for venue using Foursquare's Places API search
-          fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=1&ll=${markerData.marker._lngLat.lat},${markerData.marker._lngLat.lng}&query=${markerData.name}`)
-            .then((response) => {
-              return response.json();
-            })
-            .then((myJson) => {
-              //console.log(myJson);
-              console.log(myJson.response.venues[0]);
-              return myJson.response.venues[0].id;
-            })
-            .then((vID) => {
-              markerData.vID = vID;
+        // fetch data for venue using Foursquare's Places API search
+        fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=1&ll=${markerData.marker._lngLat.lat},${markerData.marker._lngLat.lng}&query=${markerData.name}`)
+          .then((response) => {
+            return response.json();
+          })
+          .then((myJson) => {
+            //console.log(myJson);
+            console.log(myJson.response.venues[0]);
+            return myJson.response.venues[0].id;
+          })
+          .then((vID) => {
+            markerData.vID = vID;
+
+            // for now, only fetches for detailed venue info for one venue at a given index (to not exceed quota)
+            if (i === 18) {
 
               // fetch more detailed data for venue using Foursquare's Places API VENUE_ID
               fetch(`https://api.foursquare.com/v2/venues/${markerData.vID}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180923`)
@@ -248,14 +253,36 @@ class App extends Component {
                 .then((dataArr) => {
                   markerData.photo = dataArr; // works
                   console.log(markerData); // works
+                  console.log(markerData.photo);
+                  console.log(markerData.photo[0]);
+                  //console.log(markerData[photo]); // doesn't work
                 })
-            })
-            .catch(function () {
-              console.log('error');
-            });
+
+            }
+            
+          })
+          .catch(function () {
+            console.log('error');
+          });
 
         // push markerData to array of markers
         markers.push(markerData);
+
+        /*
+        // start test code
+        if (i === 3) {
+          // store array of markers in state
+          this.setState({
+            markers: markers
+          })
+          console.log(this.state.markers[3].photo[0]);
+          console.log(this.state.markers[3].photo);
+          console.log(this.state.markers[3]['photo']);
+          //console.log(this.state.markers[3][photo]);
+          console.log(this.state.markers[3]);
+        }
+        // end test code
+        */
 
         i++;
 
@@ -280,7 +307,10 @@ class App extends Component {
         markers: markers
       })
 
+
     });
+
+
 
   }
 
@@ -292,6 +322,7 @@ class App extends Component {
     // latest state does not appear to be reflected in render...
     // test code below results in an array consisting of a string "undefined300x300undefined" for each marker stored in state, eventhough all the photo data appears to have been successfully fetched and stored for each marker (ie, it shows up when inspecting the app's State in React dev tools)
     // start test code
+    /*
     if (this.state.markers.length > 0) {
       this.state.markers.forEach((markerinArry) => {
         //imgTest = (<img src='' />);
@@ -302,8 +333,9 @@ class App extends Component {
 
       console.log(imgTests);
     }
+    */
     // end test code
-    
+
 
     // filter and add markers to map
     this.state.markers.forEach((markerObj) => {
@@ -341,7 +373,7 @@ class App extends Component {
         }
 
         <FontAwesomeIcon icon="coffee" />
-        
+
 
       </div>
 
