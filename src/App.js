@@ -85,6 +85,11 @@ class App extends Component {
    * @param {string} marker_name 
    * 
    */
+
+  /////////
+  //TODO: simulate itemClick (with styling only) when a marker on the map is clicked
+  /////////
+
   itemClick(list_item, item) {
 
     // remove any toggled open styling among list items
@@ -203,7 +208,12 @@ class App extends Component {
         let marker = new mapboxgl.Marker(this.markerRef[i].current)
           .setLngLat(feature.geometry.coordinates)
           .setPopup(new mapboxgl.Popup({ offset: 25 })
-            .setHTML(`<h3>${feature.properties.title}</h3><p>${feature.properties.description}</p>`))
+            .setHTML(`
+            <div class='popup-text'>
+              <h2>${feature.properties.title}</h2>
+              <p>${feature.properties.description}</p>
+            </div>
+            `))
 
         // create object containing marker instance and venue data
         let markerData = {
@@ -213,8 +223,6 @@ class App extends Component {
           vID: '',
           photo: []
         }
-        
-        
 
         // fetch data for venue using Foursquare's Places API search
         fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=1&ll=${markerData.marker._lngLat.lat},${markerData.marker._lngLat.lng}&query=${markerData.name}`)
@@ -228,6 +236,10 @@ class App extends Component {
           })
           .then((vID) => {
             markerData.vID = vID;
+
+            ////////////////
+            // TODO: simulate asynchronous fetch for photo data with hardcoded photo data
+            //////////////// 
 
             // for now, only fetches for detailed venue info for one venue at a given index (to not exceed quota)
             if (i === 18) {
@@ -371,9 +383,8 @@ class App extends Component {
             )
           })
         }
-
+        
         <FontAwesomeIcon icon="coffee" />
-
 
       </div>
 

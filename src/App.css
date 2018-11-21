@@ -31,6 +31,10 @@
   }
 }
 
+h2 {
+  font-size: 130%;
+}
+
 
 #map {
   width: 100%;
@@ -38,21 +42,40 @@
 }
 
 .mapboxgl-popup {
-  max-width: 200px;
+  /* max-width: 200px; */
   top: 16px;
 }
 
 .mapboxgl-popup-content {
   text-align: center;
   font-family: 'Open Sans', sans-serif;
-  padding: 18px 15px 15px;
+  /* padding: 18px 15px 15px; */
+  padding: 0;
+  width: 290px;
+  height: 220px;
+  /* 
+    * For testing, a hardcoded image for one venue is temporarily being used here
+    * TODO: change placeholder image for popup 
+  */
+  background-image: url(https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg);
+  background-position: center;
 }
 
 .mapboxgl-popup-close-button {
   right: 6px;
   top: 2px;
+  font-size: 150%;
+  background-color: rgba(255,255,255,0.6);
+  padding: 2px 7px;
+  border-radius: 40px;
 }
 
+div.popup-text {
+  background: rgba(255,255,255,0.8);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
 
 .marker {
   background-image: url('coffee-solid.svg');
