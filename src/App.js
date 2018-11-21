@@ -50,6 +50,9 @@ class App extends Component {
     this.onSelection = this.onSelection.bind(this);
     this.recenterMap = this.recenterMap.bind(this);
     this.zoomTo = this.zoomTo.bind(this);
+    this.markerClick = this.markerClick.bind(this);
+    this.rmMenuItemStyle = this.rmMenuItemStyle.bind(this);
+    this.mapClick = this.mapClick.bind(this);
   }
 
   /**
@@ -71,6 +74,7 @@ class App extends Component {
    * 
    */
   zoomTo(markerObj) {
+    //simItemClick(markerObj);
     this.map.flyTo({
       center: [
         markerObj.marker._lngLat.lng,
@@ -80,28 +84,64 @@ class App extends Component {
     })
   }
 
+
+  /**
+   * Simulates itemClick in menu with styling
+   * @param {obj} markerObj 
+   */
+  
+  markerClick(event) {
+    console.log(`${this.state.markers[event.target.id].name} clicked`);
+    let markerObj = this.state.markers[event.target.id];
+
+    let items = this.rmMenuItemStyle();
+
+    // find div.list-item with innerHTML === this.state.markers[event.target.id].name
+    // and then if the popup status is open, add className 'open' to the DOM el
+    let mp = markerObj.marker.getPopup();
+    // toggle open list item if popup is open
+    if (mp.isOpen() === true) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].innerHTML === markerObj.name) {
+          items[i].className = `list-item open`;
+        }
+      }
+    }
+
+  }
+
+  // Removes any toggled open styling among list items
+  // TODO: refactor without loop
+  rmMenuItemStyle() {
+    const items = document.querySelectorAll('.list-item');
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].className === `list-item open`) {
+        items[i].className = `list-item`;
+      }
+    }
+    return items;
+  }
+
+  // TODO: should call rmMenuItemStyle() when 'button.mapboxgl-popup-close-button' clicked...
+  // and should NOT call rmMenuItemStyle() when any other popup content is clicked...
+  mapClick(event) {
+    if (event.target.className !== 'marker mapboxgl-marker mapboxgl-marker-anchor-center') {
+      this.rmMenuItemStyle();
+    }
+  }
+
+
   /**
    * Toggles list item styling and popup for marker matching list item clicked
    * @param {string} marker_name 
    * 
    */
 
-  /////////
-  //TODO: simulate itemClick (with styling only) when a marker on the map is clicked
-  /////////
-
   itemClick(list_item, item) {
 
-    // remove any toggled open styling among list items
-    const items = item.target.parentNode.children;
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].className === `list-item open`) {
-        items[i].className = `list-item`;
-      }
-    }
+    this.rmMenuItemStyle();
 
     this.state.markers.forEach((markerObj) => {
-
       // open popup for marker matching clicked list item
       if (markerObj.name === list_item) {
         // zoom in and center map on marker location
@@ -222,6 +262,9 @@ class App extends Component {
           marker: marker,
           vID: '',
           photo: []
+          /*onClick: function() {
+            App.markerClick(markerData.name);
+          }*/
         }
 
         // fetch data for venue using Foursquare's Places API search
@@ -271,7 +314,7 @@ class App extends Component {
                 })
 
             }
-            
+
           })
           .catch(function () {
             console.log('error');
@@ -368,7 +411,7 @@ class App extends Component {
     /* ref instead of id? */
     return (
       <div>
-        <div id="map"></div>
+        <div id="map" onClick={(e) => this.mapClick(e)}></div>
         <div className='sidebar pad2'>
           <Select selection={this.state.selection} onSelection={this.onSelection}></Select>
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
@@ -379,11 +422,11 @@ class App extends Component {
           this.markerRef.map((reference) => {
             n++;
             return (
-              <div className='marker' key={n} ref={reference} />
+              <div className='marker' id={n - 1} key={n} ref={reference} onClick={(e) => this.markerClick(e)} />
             )
           })
         }
-        
+
         <FontAwesomeIcon icon="coffee" />
 
       </div>
