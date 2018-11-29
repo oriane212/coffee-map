@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Reenie+Beanie');
+
 .App {
   text-align: center;
 }
@@ -35,30 +37,48 @@ h2 {
   font-size: 130%;
 }
 
+#root {
+  height: 100%;
+}
 
 #map {
+  width: 66.6%;
+  right: 0;
+  height: 100%;
+  position: absolute;
+}
+
+canvas.mapboxgl-canvas {
   width: 100%;
-  height: 500px;
+  height: 100%;
 }
 
 .mapboxgl-popup {
   /* max-width: 200px; */
-  top: 16px;
+  top: -10px;
+  height: 100%;
 }
+/*
+div.mapboxgl-popup mapboxgl-popup-anchor-top {
+  transform: none;
+}*/
 
 .mapboxgl-popup-content {
   text-align: center;
-  font-family: 'Open Sans', sans-serif;
+  /* font-family: 'Open Sans', sans-serif; */
+  font-family: 'Reenie Beanie', cursive;
   /* padding: 18px 15px 15px; */
   padding: 0;
-  width: 290px;
-  height: 220px;
+  width: 200px;
+  height: 100%;
   /* 
     * For testing, a hardcoded image for one venue is temporarily being used here
     * TODO: change placeholder image for popup 
   */
-  background-image: url(https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg);
+  background-image: url(https://fastly.4sqi.net/img/general/500x500/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg);
   background-position: center;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+  filter: grayscale(100%);
 }
 
 .mapboxgl-popup-close-button {
@@ -71,19 +91,35 @@ h2 {
 }
 
 div.popup-text {
-  background: rgba(255,255,255,0.8);
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.3));
   position: absolute;
-  bottom: 0;
-  width: 100%;
+  top: 0;
+  height: 100%;
+  width: 200px;
+  color: white;
+  padding: 60px 16px;
+  font-size: 250%;
+  line-height: normal;
 }
 
 .marker {
   background-image: url('coffee-solid.svg');
-  background-size: cover;
+  /* background-size: cover; */
   width: 18px;
   height: 14px;
   cursor: pointer;
   opacity: 0.8;
+  color: #a78871;
+}
+
+div.marker.open {
+  z-index: 10;
+  background-color: white;
+  opacity: 1;
+  border-radius: 30px;
+  border: 2px solid #673b3b;
+  height: 23px;
+  width: 25px;
 }
 
 div.marker:hover {
@@ -95,13 +131,18 @@ div.marker:hover {
 div.list-item {
   cursor: pointer;
   font-size: 0.9em;
+  padding: 3px 6px;
 }
 
 div.list-item.open {
   font-weight: bold;
+  color: white;
+  background-color: rgba(113, 100, 76, 1.0);
 }
 
 .sidebar {
+  font-family: 'Reenie Beanie', cursive;
+  font-size: x-large;
   width: 33.3333%;
   z-index: 2000;
   position: absolute;
@@ -129,4 +170,14 @@ select {
     width: 100%;
     top: 300px; /* set equal to small screen map height */
   }
+
+  .mapboxgl-popup-content {
+    width: 175px;
+  }
+
+  div.popup-text {
+    width: 175px;
+    font-size: 200%;
+  }
+  
 }

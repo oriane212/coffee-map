@@ -78,18 +78,17 @@ class App extends Component {
    * 
    */
   zoomTo(markerObj) {
-    //simItemClick(markerObj);
-    let dist_lng = 0;
-    let dist_lat = .12;
+    let dist_lng = -0.1;
+    let dist_lat = .01;
     if (window.innerWidth > 600) {
-      dist_lng = .17;
-      //dist_lat = .12;
+      dist_lng = -0.08;
     }
     this.map.flyTo({
       center: [
-        markerObj.marker._lngLat.lng - dist_lng,
+        markerObj.marker._lngLat.lng + dist_lng,
         markerObj.marker._lngLat.lat + dist_lat
       ],
+      // TODO: increase zoom? If so, dist_lng and dist_lat will need to be tweaked to keep the marker and popup in view
       zoom: 9
       //speed: 1.2,
       //curve: 2
@@ -262,7 +261,7 @@ class App extends Component {
         // pass custom marker DOM element attached to marker reference at index
         let marker = new mapboxgl.Marker(this.markerRef[i].current)
           .setLngLat(feature.geometry.coordinates)
-          .setPopup(new mapboxgl.Popup({ offset: 25 })
+          .setPopup(new mapboxgl.Popup({anchor: 'right', offset: 45, closeButton: false })
             .setHTML(`
             <div class='popup-text'>
               <h2>${feature.properties.title}</h2>
