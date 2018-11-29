@@ -10,8 +10,12 @@ import Select from './Select';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStarHalf } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faCoffee)
+library.add(faCoffee);
+library.add(faStar);
+library.add(faStarHalf);
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
 
@@ -75,12 +79,20 @@ class App extends Component {
    */
   zoomTo(markerObj) {
     //simItemClick(markerObj);
+    let dist_lng = 0;
+    let dist_lat = .12;
+    if (window.innerWidth > 600) {
+      dist_lng = .17;
+      //dist_lat = .12;
+    }
     this.map.flyTo({
       center: [
-        markerObj.marker._lngLat.lng,
-        markerObj.marker._lngLat.lat
+        markerObj.marker._lngLat.lng - dist_lng,
+        markerObj.marker._lngLat.lat + dist_lat
       ],
       zoom: 9
+      //speed: 1.2,
+      //curve: 2
     })
   }
 
@@ -93,6 +105,9 @@ class App extends Component {
   markerClick(event) {
     console.log(`${this.state.markers[event.target.id].name} clicked`);
     let markerObj = this.state.markers[event.target.id];
+
+    // zoom in and center map on marker location
+    this.zoomTo(markerObj);
 
     let items = this.rmMenuItemStyle();
 
@@ -252,6 +267,7 @@ class App extends Component {
             <div class='popup-text'>
               <h2>${feature.properties.title}</h2>
               <p>${feature.properties.description}</p>
+              <FontAwesomeIcon icon="star" />
             </div>
             `))
 
@@ -428,6 +444,8 @@ class App extends Component {
         }
 
         <FontAwesomeIcon icon="coffee" />
+        <FontAwesomeIcon icon="star" />
+        <FontAwesomeIcon icon="star-half" />
 
       </div>
 
