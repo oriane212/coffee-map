@@ -98,37 +98,40 @@ class App extends Component {
 
 
   /**
-   * Simulates itemClick in menu with styling
-   * @param {obj} markerObj 
+   * Handles map marker click and simulates menu item click
+   * @param {string} venue_name - Empty by default, and remains empty unless the click was simulated.
+   * @param eventTarget - DOM element clicked. Empty by default to allow for a simulated click event.
    */
-  
-  markerClick(eventTarget) {
-    
-    // first remove any already open markers
-    this.rmMarkerStyle();
-    // add open-marker class to DOM marker
-    eventTarget.classList.toggle('open-marker');
-    
-    // store marker object for marker at index matching DOM element's id
-    console.log(`${this.state.markers[eventTarget.id].name} clicked`);
-    let markerObj = this.state.markers[eventTarget.id];
 
+  markerClick(venue_name = '', eventTarget = '') {
+
+    // remove any already 'open' marker styles
+    this.rmMarkerStyle();
+
+    let markerObj = '';
+    let markerEl = eventTarget;
+
+    // if the marker was actually clicked, simulate its corresponding menu item click
+    if (eventTarget !== '') {
+      // store marker object for marker at index matching DOM element's id
+      //console.log(`${this.state.markers[eventTarget.id].name} clicked`);
+      markerObj = this.state.markers[eventTarget.id];
+      this.itemClick(markerObj.name, '');
+
+    } else {
+      // otherwise, use the venue name to locate the marker in state, and use index matching the marker's DOM element ID
+      this.state.markers.forEach((marker, index) => {
+        if (marker.name === venue_name) {
+          markerObj = marker;
+          markerEl = document.getElementById(index);
+        }
+      })
+    }
+
+    // add open-marker class to DOM marker
+    markerEl.classList.toggle('open-marker');
     // zoom in and center map on marker location
     this.zoomTo(markerObj);
-
-    let items = this.rmMenuItemStyle();
-
-    // find div.list-item with innerHTML === this.state.markers[event.target.id].name
-    // and then if the popup status is open, add className 'open' to the DOM el
-    let mp = markerObj.marker.getPopup();
-    // toggle open list item if popup is open
-    if (mp.isOpen() === true) {
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].innerHTML === markerObj.name) {
-          items[i].className = `list-item open`;
-        }
-      }
-    }
 
   }
 
@@ -137,7 +140,7 @@ class App extends Component {
     if (open_marker != null) {
       open_marker.classList.toggle('open-marker');
     }
-    return ;
+    return;
   }
 
   // Removes any toggled open styling among list items
@@ -163,52 +166,29 @@ class App extends Component {
 
 
   /**
-   * Toggles list item styling and popup for marker matching list item clicked
-   * @param {string} marker_name 
+   * Handles menu item click and simulates map marker click
+   * @param {string} venue_name
+   * @param eventTarget - DOM element clicked. Empty by default to allow for a simulated click event.
    * 
    */
 
-  itemClick(list_item, item) {
+  itemClick(venue_name, eventTarget = '') {
 
-    this.rmMenuItemStyle();
+    // remove any already 'open' menu item styles
+    let items = this.rmMenuItemStyle();
 
-    let id_DOM = 0;
-
-    this.state.markers.forEach((markerObj, index) => {
-      
-      // open popup for marker matching clicked list item
-      if (markerObj.name === list_item) {
-
-        // get the index of the markerObj in state
-        id_DOM = index;
-
-        // zoom in and center map on marker location
-        this.zoomTo(markerObj);
-        // toggle popup
-        markerObj.marker.togglePopup();
-        // get popup bound to marker
-        let mp = markerObj.marker.getPopup();
-        // toggle open list item if popup is open
-        if (mp.isOpen() === true) {
-          item.target.className = `list-item open`;
-        }
-
-      }
-      // close any other open marker popups
-      else if (markerObj.name !== list_item) {
-        // get popup bound to marker
-        let mp = markerObj.marker.getPopup();
-        // close popup if already open
-        if (mp.isOpen() === true) {
-          markerObj.marker.togglePopup();
+    // if the menu item was actually clicked, then toggle its style and simulate its corresponding map marker click
+    if (eventTarget !== '') {
+      eventTarget.classList.toggle('open');
+      this.markerClick(venue_name, '');
+    } else {
+      // otherwise loop through to find the DOM element with inner HTML matching the venue name and toggle its style
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].innerHTML === venue_name) {
+          items[i].classList.toggle('open');
         }
       }
-    })
-
-    // get the DOM marker element with id matching the index
-    let markerEl = document.getElementById(`${id_DOM}`);
-    // pass DOM element to markerClick()
-    this.markerClick(markerEl);
+    }
 
   }
 
@@ -292,14 +272,15 @@ class App extends Component {
         // pass custom marker DOM element attached to marker reference at index
         let marker = new mapboxgl.Marker(this.markerRef[i].current)
           .setLngLat(feature.geometry.coordinates)
-          .setPopup(new mapboxgl.Popup({anchor: 'right', offset: 45, closeButton: false })
-            .setHTML(`
-            <div class='popup-text'>
-              <h2>${feature.properties.title}</h2>
-              <p>${feature.properties.description}</p>
-              <FontAwesomeIcon icon="star" />
-            </div>
-            `))
+        /*]].setPopup(new mapboxgl.Popup({ anchor: 'right', offset: 45, closeButton: false })
+          .setHTML(`
+        <div class='popup-text'>
+          <h2>${feature.properties.title}</h2>
+          <p>${feature.properties.description}</p>
+          <FontAwesomeIcon icon="star" />
+        </div>
+        `))
+        */
 
         // create object containing marker instance and venue data
         let markerData = {
@@ -431,7 +412,7 @@ class App extends Component {
         let imgSrc = `${markerinArry.photo[0]}300x300${markerinArry.photo[1]}`;
         imgTests.push(imgSrc);
       })
-
+ 
       console.log(imgTests);
     }
     */
@@ -468,7 +449,7 @@ class App extends Component {
           this.markerRef.map((reference) => {
             n++;
             return (
-              <div className='marker' id={n - 1} key={n} ref={reference} onClick={(e) => this.markerClick(e.target)} />
+              <div className='marker' id={n - 1} key={n} ref={reference} onClick={(e) => this.markerClick('', e.target)} />
             )
           })
         }
