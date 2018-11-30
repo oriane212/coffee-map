@@ -57,6 +57,7 @@ class App extends Component {
     this.markerClick = this.markerClick.bind(this);
     this.rmMenuItemStyle = this.rmMenuItemStyle.bind(this);
     this.mapClick = this.mapClick.bind(this);
+    this.rmMarkerStyle = this.rmMarkerStyle.bind(this);
   }
 
   /**
@@ -101,9 +102,16 @@ class App extends Component {
    * @param {obj} markerObj 
    */
   
-  markerClick(event) {
-    console.log(`${this.state.markers[event.target.id].name} clicked`);
-    let markerObj = this.state.markers[event.target.id];
+  markerClick(eventTarget) {
+    
+    // first remove any already open markers
+    this.rmMarkerStyle();
+    // add open-marker class to DOM marker
+    eventTarget.classList.toggle('open-marker');
+    
+    // store marker object for marker at index matching DOM element's id
+    console.log(`${this.state.markers[eventTarget.id].name} clicked`);
+    let markerObj = this.state.markers[eventTarget.id];
 
     // zoom in and center map on marker location
     this.zoomTo(markerObj);
@@ -124,6 +132,14 @@ class App extends Component {
 
   }
 
+  rmMarkerStyle() {
+    const open_marker = document.querySelector('.open-marker');
+    if (open_marker != null) {
+      open_marker.classList.toggle('open-marker');
+    }
+    return ;
+  }
+
   // Removes any toggled open styling among list items
   // TODO: refactor without loop
   rmMenuItemStyle() {
@@ -141,6 +157,7 @@ class App extends Component {
   mapClick(event) {
     if (event.target.className !== 'marker mapboxgl-marker mapboxgl-marker-anchor-center') {
       this.rmMenuItemStyle();
+      this.rmMarkerStyle();
     }
   }
 
@@ -155,9 +172,16 @@ class App extends Component {
 
     this.rmMenuItemStyle();
 
-    this.state.markers.forEach((markerObj) => {
+    let id_DOM = 0;
+
+    this.state.markers.forEach((markerObj, index) => {
+      
       // open popup for marker matching clicked list item
       if (markerObj.name === list_item) {
+
+        // get the index of the markerObj in state
+        id_DOM = index;
+
         // zoom in and center map on marker location
         this.zoomTo(markerObj);
         // toggle popup
@@ -181,6 +205,11 @@ class App extends Component {
       }
     })
 
+    // get the DOM marker element with id matching the index
+    let markerEl = document.getElementById(`${id_DOM}`);
+    // pass DOM element to markerClick()
+    this.markerClick(markerEl);
+
   }
 
   /* unused function
@@ -194,6 +223,8 @@ class App extends Component {
   }*/
 
   onSelection(event) {
+    this.rmMarkerStyle();
+    this.rmMenuItemStyle();
     this.setState({
       selection: event.target.value
     })
@@ -437,7 +468,7 @@ class App extends Component {
           this.markerRef.map((reference) => {
             n++;
             return (
-              <div className='marker' id={n - 1} key={n} ref={reference} onClick={(e) => this.markerClick(e)} />
+              <div className='marker' id={n - 1} key={n} ref={reference} onClick={(e) => this.markerClick(e.target)} />
             )
           })
         }

@@ -112,6 +112,13 @@ div.popup-text {
   color: #a78871;
 }
 
+.open-marker {
+  z-index: 10;
+  opacity: 1;
+  height: 27px;
+  width: 35px;
+}
+/*
 div.marker.open {
   z-index: 10;
   background-color: white;
@@ -121,12 +128,15 @@ div.marker.open {
   height: 23px;
   width: 25px;
 }
+*/
 
+/*
 div.marker:hover {
   width: 25px;
   height: 20px;
   opacity: 1.0;
 }
+*/
 
 div.list-item {
   cursor: pointer;
