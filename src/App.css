@@ -63,7 +63,8 @@ div.mapboxgl-popup mapboxgl-popup-anchor-top {
   transform: none;
 }*/
 
-.mapboxgl-popup-content {
+
+.my-popup {
   text-align: center;
   /* font-family: 'Open Sans', sans-serif; */
   font-family: 'Reenie Beanie', cursive;
@@ -79,6 +80,9 @@ div.mapboxgl-popup mapboxgl-popup-anchor-top {
   background-position: center;
   box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
   filter: grayscale(100%);
+  position: absolute;
+  left: 33.33%;
+  z-index: 1000;
 }
 
 .mapboxgl-popup-close-button {
@@ -100,6 +104,14 @@ div.popup-text {
   padding: 60px 16px;
   font-size: 250%;
   line-height: normal;
+}
+
+.stars {
+  font-size: medium;
+}
+
+.stars svg {
+  padding: 2px;
 }
 
 .marker {
@@ -181,8 +193,16 @@ select {
     top: 300px; /* set equal to small screen map height */
   }
 
+  /*
   .mapboxgl-popup-content {
     width: 175px;
+  }
+  */
+
+  .my-popup {
+    width: 175px;
+    height: 300px;
+    left: 0;
   }
 
   div.popup-text {
