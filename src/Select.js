@@ -10,7 +10,8 @@ class Select extends Component {
         ]
 
         return (
-            <select 
+            <div className='select-container'>
+                <select 
                 value={this.props.selection}
                 onChange={(event) => this.props.onSelection(event)}>
                 {categories.map((category) => {
@@ -19,6 +20,8 @@ class Select extends Component {
                     )
                 })}
             </select>
+            </div>
+            
         )
     }
 }

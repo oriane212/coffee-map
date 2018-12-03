@@ -36,7 +36,7 @@ class List extends Component {
         
         return (
 
-            <div>
+            <div className='menu-items-container'>
                 {listDivs}
             </div>
 

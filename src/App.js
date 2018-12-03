@@ -446,6 +446,7 @@ class App extends Component {
         <div className='sidebar pad2'>
           <Select selection={this.state.selection} onSelection={this.onSelection}></Select>
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
+          <div className='app-info'>More info about the app</div>
         </div>
         <Popup className='my-popup' rating='3.0' h2='Venue Name'/>
 

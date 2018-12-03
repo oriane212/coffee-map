@@ -10,13 +10,13 @@ library.add(faStar);
 library.add(faStarHalf);
 
 class Popup extends Component {
-    
+
     render() {
 
 
         let rating = parseInt(this.props.rating);
         let stars = [];
-        for (let i=0; i < rating; i++) {
+        for (let i = 0; i < rating; i++) {
             stars.push(
                 <FontAwesomeIcon icon="star" />
             )
@@ -24,11 +24,14 @@ class Popup extends Component {
 
         return (
             <div className='my-popup'>
-                <div className='popup-text'>
-                    <h2>{this.props.h2}</h2>
-                    <p>Description text</p>
-                    <div className='stars'>
-                        {stars}
+                <div className='popup-overlay'>
+                    <div className='popup-text'>
+                        <h2>{this.props.h2}</h2>
+                        <div className='stars'>
+                            {stars}
+                        </div>
+                        <p className='venue-type'>Description text</p>
+                        <p className='venue-details'>153 Lexington Avenue, New York, NY 10013</p>
                     </div>
                 </div>
             </div>
@@ -37,4 +40,3 @@ class Popup extends Component {
 }
 
 export default Popup;
-    

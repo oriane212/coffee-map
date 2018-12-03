@@ -94,24 +94,43 @@ div.mapboxgl-popup mapboxgl-popup-anchor-top {
   border-radius: 40px;
 }
 
-div.popup-text {
-  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.3));
+div.popup-overlay {
+  background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.2));
   position: absolute;
   top: 0;
   height: 100%;
   width: 200px;
   color: white;
-  padding: 60px 16px;
+  padding: 60px 0;
   font-size: 250%;
   line-height: normal;
+  text-align: left;
+}
+
+div.popup-text {
+  background-color: rgba(0,0,0,0.7);
+  padding: 100px 26px;
+  height: 530px;
+}
+
+p.venue-type {
+  font-size: 0.4em;
+  text-transform: uppercase;
+  font-weight: bolder;
+  letter-spacing: 2px;
+  padding: 10px 0;
+}
+
+p.venue-details {
+  font-size: 0.6em;
 }
 
 .stars {
-  font-size: medium;
+  font-size: x-small;
 }
 
 .stars svg {
-  padding: 2px;
+  margin: 2px;
 }
 
 .marker {
@@ -153,13 +172,14 @@ div.marker:hover {
 div.list-item {
   cursor: pointer;
   font-size: 0.9em;
-  padding: 3px 6px;
+  padding: 3px 16px;
+  background-color: white;
 }
 
 div.list-item.open {
   font-weight: bold;
   color: white;
-  background-color: rgba(113, 100, 76, 1.0);
+  background-color: rgba(0,0,0,0.8);
 }
 
 .sidebar {
@@ -169,16 +189,35 @@ div.list-item.open {
   z-index: 2000;
   position: absolute;
   top: 0;
-  height: 500px; /* set equal to map height */
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 20px;
+  height: 100%;
+  background-color: rgba(125, 121, 117, 1);
+  padding: 0;
+}
+
+div.menu-items-container {
+  background-color: white;
+  padding: 10px 0;
+  height: 530px;
+}
+
+div.select-container {
+  height: 60px;
+  width: 100%;
+  background-color: rgba(204, 193, 176, 1);
 }
 
 select {
-  margin-bottom: 10px;
+  margin: 18px 20px 10px 20px;
   width: 100%;
   height: 30px;
   font-size: small;
+}
+
+div.app-info {
+  margin: 20px;
+  font-size: 0.6em;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 @media screen and (max-width: 599px) {
