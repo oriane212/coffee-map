@@ -26,7 +26,6 @@ class Popup extends Component {
             <div className='my-popup'>
                 <div className='popup-overlay'>
                     <div className='popup-text'>
-                        <h2>{this.props.h2}</h2>
                         <div className='stars'>
                             {stars}
                         </div>

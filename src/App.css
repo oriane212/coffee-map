@@ -99,7 +99,7 @@ div.popup-overlay {
   position: absolute;
   top: 0;
   height: 100%;
-  width: 200px;
+  width: 100%;
   color: white;
   padding: 60px 0;
   font-size: 250%;
@@ -108,8 +108,8 @@ div.popup-overlay {
 }
 
 div.popup-text {
-  background-color: rgba(0,0,0,0.7);
-  padding: 100px 26px;
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7), rgba(0,0,0,0.4));
+  padding: 180px 26px;
   height: 530px;
 }
 
@@ -179,7 +179,7 @@ div.list-item {
 div.list-item.open {
   font-weight: bold;
   color: white;
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0,0,0,0.7);
 }
 
 .sidebar {
@@ -220,7 +220,7 @@ div.app-info {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-@media screen and (max-width: 599px) {
+@media screen and (max-width: 635px) {
   
   #map {
     width: 100%;
@@ -239,14 +239,23 @@ div.app-info {
   */
 
   .my-popup {
-    width: 175px;
+    width: 50%;
     height: 300px;
     left: 0;
   }
 
+  div.popup-overlay {
+    font-size: 120%;
+  }
+
   div.popup-text {
-    width: 175px;
+    width: 100%;
+    height: auto;
     font-size: 200%;
+    padding: 150px 20px 20px;
+    position: absolute;
+    bottom: 0;
+    background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.7));
   }
   
 }
