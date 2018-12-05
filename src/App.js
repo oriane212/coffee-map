@@ -83,18 +83,18 @@ class App extends Component {
    * 
    */
   zoomTo(markerObj) {
-    let dist_lng = -0.1;
-    let dist_lat = .01;
+    let dist_lng = -0.04;
+    let dist_lat = 0;
     if (window.innerWidth > 600) {
-      dist_lng = -0.08;
+      dist_lng = -0.03;
+      dist_lat = -0.01;
     }
     this.map.flyTo({
       center: [
         markerObj.marker._lngLat.lng + dist_lng,
         markerObj.marker._lngLat.lat + dist_lat
       ],
-      // TODO: increase zoom? If so, dist_lng and dist_lat will need to be tweaked to keep the marker and popup in view
-      zoom: 9
+      zoom: 10.5
       //speed: 1.2,
       //curve: 2
     })
