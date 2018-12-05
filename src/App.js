@@ -28,10 +28,10 @@ class App extends Component {
       this.markerRef.push(React.createRef());
     }
     this.state = {
-      lng: -73.8226071,
+      lng: -73.0226071,
       lat: 40.6786204,
       // TODO: zoom out further for smaller screen (use mapbox property expression?)
-      zoom: 7,
+      zoom: 6.5,
       //items: '',
       markers: [],
       /*filters: [
@@ -59,12 +59,16 @@ class App extends Component {
    * Recenters the map and resets zoom level to default
    */
   recenterMap() {
+    let zoomlevel = 6.8;
+    if (window.innerWidth < 450) {
+      zoomlevel = 6.5;
+    }
     this.map.flyTo({
       center: [
         this.state.lng,
         this.state.lat
       ],
-      zoom: this.state.zoom
+      zoom: zoomlevel
     })
     this.setState({
       open: ''
