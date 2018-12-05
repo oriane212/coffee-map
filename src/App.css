@@ -76,7 +76,7 @@ div.mapboxgl-popup mapboxgl-popup-anchor-top {
     * For testing, a hardcoded image for one venue is temporarily being used here
     * TODO: change placeholder image for popup 
   */
-  background-image: url(https://fastly.4sqi.net/img/general/500x500/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg);
+  /* background-image: url(https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg); */
   background-position: center;
   box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
   filter: grayscale(100%);

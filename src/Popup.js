@@ -23,7 +23,7 @@ class Popup extends Component {
         }
 
         return (
-            <div className='my-popup'>
+            <div className='my-popup' style={ {backgroundImage: `url(${this.props.img})`}}>
                 <div className='popup-overlay'>
                     <div className='popup-text'>
                         <div className='stars'>

@@ -298,11 +298,19 @@ class App extends Component {
           address: feature.place_name,
           marker: marker,
           vID: '',
-          photo: []
+          photo: ''
           /*onClick: function() {
             App.markerClick(markerData.name);
           }*/
         }
+
+        // test: adding hard coded photo link works here
+        //markerData.photo = `https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg`;
+
+
+        /*
+
+        //////////// start Foursquare /////////////////////
 
         // fetch data for venue using Foursquare's Places API search
         fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=1&ll=${markerData.marker._lngLat.lat},${markerData.marker._lngLat.lng}&query=${markerData.name}`)
@@ -357,6 +365,10 @@ class App extends Component {
             console.log('error');
           });
 
+        //////////////// end Foursquare /////////////////////
+
+        */
+
         // push markerData to array of markers
         markers.push(markerData);
 
@@ -380,6 +392,12 @@ class App extends Component {
 
       })
 
+      /*
+      //////// test: this works too
+      markers.forEach((marker) => {    
+        marker.photo = `https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg`;
+      })
+      */
 
       /*
         // response for markers[1] for example:
@@ -399,10 +417,44 @@ class App extends Component {
         markers: markers
       })
 
+      // TODO: wrap below in a separate function that takes markers array or is called when markers in state is updated...
+      let proms = [];
+      this.state.markers.forEach((marker) => {
+        // simulate asynch fetch for testing without having to use Foursquare API
+        // TODO: replace with promise using fetch and Foursquare API
+        let prom = new Promise(function(resolve, reject) {
+          setTimeout(resolve, 5000, 'https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg');
+        });
+        proms.push(prom);
+        
+      })
+
+      Promise.all(proms).then((proms) => {
+        
+        markers.forEach((marker,index) => {
+          marker.photo = proms[index];
+          console.log(proms[index]);
+        })
+        
+        // update array of markers in state
+        this.setState({
+          markers: markers
+        })
+
+      })
 
     });
 
-
+    // test: this does not work here
+    /*
+    this.state.markers.forEach((marker) => {
+      marker.photo = `https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg`;
+      // store array of markers in state
+      this.setState({
+        markers: markers
+      })
+    })
+    */
 
   }
 
@@ -447,7 +499,7 @@ class App extends Component {
       let mObj = this.state.open;
       // TODO: add props for venue image and rating
       popupComp = (
-        <Popup className='my-popup' rating='3.0' category={mObj.category} address={mObj.address}/>
+        <Popup className='my-popup' rating='3.0' category={mObj.category} address={mObj.address} img={mObj.photo}/>
       )
     }
 
