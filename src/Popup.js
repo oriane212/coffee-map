@@ -18,7 +18,7 @@ class Popup extends Component {
         let stars = [];
         for (let i = 0; i < rating; i++) {
             stars.push(
-                <FontAwesomeIcon icon="star" />
+                <FontAwesomeIcon key={i} icon="star" />
             )
         }
 
@@ -29,8 +29,8 @@ class Popup extends Component {
                         <div className='stars'>
                             {stars}
                         </div>
-                        <p className='venue-type'>Description text</p>
-                        <p className='venue-details'>153 Lexington Avenue, New York, NY 10013</p>
+                        <p className='venue-type'>{this.props.category}</p>
+                        <p className='venue-details'>{this.props.address}</p>
                     </div>
                 </div>
             </div>

@@ -8,18 +8,6 @@ import Filters from './Filters';
 import Select from './Select';
 import Popup from './Popup';
 //var mbxGeocoding = require('@mapbox/mapbox-gl-geocoder');
-/*
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCoffee } from '@fortawesome/free-solid-svg-icons';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { faStarHalf } from '@fortawesome/free-solid-svg-icons';
-
-
-library.add(faCoffee);
-library.add(faStar);
-library.add(faStarHalf);
-*/
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
 
@@ -50,7 +38,8 @@ class App extends Component {
         { category: 'Cafe', show: true },
         { category: 'Restaurant', show: true }
       ],*/
-      selection: 'All'
+      selection: 'All', 
+      open: ''
     };
 
     this.itemClick = this.itemClick.bind(this);
@@ -64,6 +53,8 @@ class App extends Component {
     this.rmMarkerStyle = this.rmMarkerStyle.bind(this);
   }
 
+  // TODO: add button for recentering map?
+  // TODO: move center point left
   /**
    * Recenters the map and resets zoom level to default
    */
@@ -74,6 +65,9 @@ class App extends Component {
         this.state.lat
       ],
       zoom: this.state.zoom
+    })
+    this.setState({
+      open: ''
     })
   }
 
@@ -97,6 +91,9 @@ class App extends Component {
       zoom: 10.5
       //speed: 1.2,
       //curve: 2
+    })
+    this.setState({
+      open: markerObj
     })
   }
 
@@ -165,6 +162,9 @@ class App extends Component {
     if (event.target.className !== 'marker mapboxgl-marker mapboxgl-marker-anchor-center') {
       this.rmMenuItemStyle();
       this.rmMarkerStyle();
+      this.setState({
+        open: ''
+      })
     }
   }
 
@@ -247,6 +247,7 @@ class App extends Component {
             if (response != null && response.error == null) {
               // store feature object
               const feature = response.body.features[0];
+              console.log(feature);
               // add title and description properties
               feature.properties = {
                 title: place.name,
@@ -290,6 +291,7 @@ class App extends Component {
         let markerData = {
           name: feature.properties.title,
           category: feature.properties.description,
+          address: feature.place_name,
           marker: marker,
           vID: '',
           photo: []
@@ -436,6 +438,15 @@ class App extends Component {
       }
     })
 
+    let popupComp = '';
+    if (this.state.open !== '') {
+      let mObj = this.state.open;
+      // TODO: add props for venue image and rating
+      popupComp = (
+        <Popup className='my-popup' rating='3.0' category={mObj.category} address={mObj.address}/>
+      )
+    }
+
     //
     let n = 0;
 
@@ -448,7 +459,10 @@ class App extends Component {
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
           <div className='app-info'>More info about the app</div>
         </div>
-        <Popup className='my-popup' rating='3.0' h2='Venue Name'/>
+        <div>
+          {popupComp}
+        </div>
+        
 
         {
           // create DOM element with ref for each marker to be rendered
