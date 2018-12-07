@@ -499,7 +499,7 @@ class App extends Component {
       let mObj = this.state.open;
       // TODO: add props for venue image and rating
       popupComp = (
-        <Popup className='my-popup' rating='3.0' category={mObj.category} address={mObj.address} img={mObj.photo}/>
+        <Popup className='my-popup' rating='3.0' venue={mObj}/>
       )
     }
 

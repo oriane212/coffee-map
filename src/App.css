@@ -72,11 +72,6 @@ div.mapboxgl-popup mapboxgl-popup-anchor-top {
   padding: 0;
   width: 200px;
   height: 100%;
-  /* 
-    * For testing, a hardcoded image for one venue is temporarily being used here
-    * TODO: change placeholder image for popup 
-  */
-  /* background-image: url(https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg); */
   background-position: center;
   box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
   filter: grayscale(100%);
@@ -105,6 +100,13 @@ div.popup-overlay {
   font-size: 250%;
   line-height: normal;
   text-align: left;
+}
+
+span.popup-img {
+  position: absolute;
+  left: 0;
+  height: 100%;
+  width: 100%;
 }
 
 div.popup-text {
@@ -211,7 +213,13 @@ select {
   margin: 18px 20px 10px 20px;
   width: 100%;
   height: 30px;
-  font-size: small;
+  font-size: x-small;
+  font-weight: bolder;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-color: #cac1b1;
+  background-color: #cac1b1;
 }
 
 div.app-info {
