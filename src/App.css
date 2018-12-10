@@ -172,14 +172,14 @@ div.marker:hover {
 }
 */
 
-div.list-item {
+.list-item {
   cursor: pointer;
   font-size: 0.9em;
   padding: 3px 16px;
   background-color: white;
 }
 
-div.list-item.open {
+.list-item.open {
   font-weight: bold;
   color: white;
   background-color: rgba(0,0,0,0.7);
@@ -197,13 +197,13 @@ div.list-item.open {
   padding: 0;
 }
 
-div.menu-items-container {
+.menu-items-container {
   background-color: white;
   padding: 10px 0;
   height: 530px;
 }
 
-div.select-container {
+nav.select-container {
   height: 60px;
   width: 100%;
   background-color: rgba(204, 193, 176, 1);
@@ -222,7 +222,7 @@ select {
   background-color: #cac1b1;
 }
 
-div.app-info {
+.app-info {
   margin: 20px;
   font-size: 0.5em;
   color: white;

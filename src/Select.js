@@ -10,17 +10,18 @@ class Select extends Component {
         ]
 
         return (
-            <div className='select-container'>
-                <select 
-                value={this.props.selection}
-                onChange={(event) => this.props.onSelection(event)}>
+            <nav className='select-container' aria-labelledby="filter-list">
+                <select
+                    id="filter-list"
+                    value={this.props.selection}
+                    onChange={(event) => this.props.onSelection(event)}>
                 {categories.map((category) => {
                     return (
                         <option key={category} value={category}>{category}</option>
                     )
                 })}
-            </select>
-            </div>
+                </select>
+            </nav>
             
         )
     }

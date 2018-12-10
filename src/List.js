@@ -13,12 +13,12 @@ class List extends Component {
             markers.map((marker) => {
                 if(this.props.selection === 'All') {
                     return (
-                        <div key={marker.name} onClick={(e) => this.props.itemClick(marker.name, e.target)} className='list-item'>{marker.name}</div>
+                        <li key={marker.name} onClick={(e) => this.props.itemClick(marker.name, e.target)} className='list-item' tabindex="0">{marker.name}</li>
                       )
                 } else {
                     if(this.props.selection === marker.category) {
                         return (
-                            <div key={marker.name} onClick={(e) => this.props.itemClick(marker.name, e.target)} className='list-item'>{marker.name}</div>
+                            <li key={marker.name} onClick={(e) => this.props.itemClick(marker.name, e.target)} className='list-item' tabindex="0">{marker.name}</li>
                           )
                     }
                 }
@@ -36,9 +36,9 @@ class List extends Component {
         
         return (
 
-            <div className='menu-items-container'>
+            <ul className='menu-items-container'>
                 {listDivs}
-            </div>
+            </ul>
 
         )
       }

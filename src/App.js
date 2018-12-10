@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Fragment } from 'react';
 import './App.css';
 import mapboxgl from 'mapbox-gl';
 import mbxGeocoding from '@mapbox/mapbox-sdk/services/geocoding';
@@ -508,13 +509,13 @@ class App extends Component {
 
     /* ref instead of id? */
     return (
-      <div>
-        <div id="map" onClick={(e) => this.mapClick(e)}></div>
-        <div className='sidebar pad2'>
+      <Fragment>
+        <section role='presentation' aria-label="Map view of listed venues" id="map" onClick={(e) => this.mapClick(e)}></section>
+        <section aria-label="Filterable list of venues" className='sidebar pad2'>
           <Select selection={this.state.selection} onSelection={this.onSelection}></Select>
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
-          <div className='app-info'>More info about the app</div>
-        </div>
+          <footer className='app-info'>More info about the app</footer>
+        </section>
         <div>
           {popupComp}
         </div>
@@ -530,7 +531,7 @@ class App extends Component {
           })
         }
         
-      </div>
+      </Fragment>
 
     );
   }
