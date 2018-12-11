@@ -11,6 +11,10 @@ library.add(faStarHalf);
 
 class Popup extends Component {
 
+    componentDidMount() {
+        this.props.buttonRef.current.focus();
+    }    
+
     render() {
 
         let rating = parseInt(this.props.rating);
@@ -32,10 +36,13 @@ class Popup extends Component {
                         <p className='venue-type'>{this.props.venue.category}</p>
                         <p className='venue-details'>{this.props.venue.address}</p>
                     </div>
+                    <button ref={this.props.buttonRef} id="close-popup" onKeyDown={(e) => this.props.close(e)} onClick={(e) => this.props.close(e)} aria-label="close">X</button>
                 </div>
             </div>
         )
     }
 }
+
+
 
 export default Popup;

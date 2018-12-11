@@ -28,6 +28,7 @@ class App extends Component {
     for (let i = 0; i < this.totalMarkers; i++) {
       this.markerRef.push(React.createRef());
     }
+    this.buttonEl = React.createRef();
     this.state = {
       lng: -73.0226071,
       lat: 40.6786204,
@@ -52,6 +53,33 @@ class App extends Component {
     this.rmMenuItemStyle = this.rmMenuItemStyle.bind(this);
     this.mapClick = this.mapClick.bind(this);
     this.rmMarkerStyle = this.rmMarkerStyle.bind(this);
+    this.closePopup = this.closePopup.bind(this);
+  }
+
+  /**
+   * Closes popup and removes 'open' styling
+   */
+  closePopup(event) {
+    if (event.type === 'click' || (event.key === 'Enter' || event.key === ' ')) {
+    
+      this.rmMarkerStyle();
+      // TODO: DOM element of items should be global ref...
+      const items = this.rmMenuItemStyle();
+
+      if (event.key === 'Enter' || event.key === ' ') {
+        // TODO: refactor?
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].innerHTML === this.state.open.name) {
+            items[i].focus();
+          }
+        }
+      }
+
+      this.setState({
+        open: ''
+      })
+
+    }
   }
 
   // TODO: add button for recentering map?
@@ -106,21 +134,23 @@ class App extends Component {
   /**
    * Handles map marker click and simulates menu item click
    * @param {string} venue_name - Empty by default, and remains empty unless the click was simulated.
-   * @param eventTarget - DOM element clicked. Empty by default to allow for a simulated click event.
+   * @param event - Empty by default to allow for a simulated click event.
    */
 
-  markerClick(venue_name = '', eventTarget = '') {
+  markerClick(venue_name = '', event = '') {
 
     // remove any already 'open' marker styles
     this.rmMarkerStyle();
 
     let markerObj = '';
-    let markerEl = eventTarget;
+    let markerEl = '';
 
     // if the marker was actually clicked, simulate its corresponding menu item click
-    if (eventTarget !== '') {
+    if (event !== '') {
       // store marker object for marker at index matching DOM element's id
       //console.log(`${this.state.markers[eventTarget.id].name} clicked`);
+      let eventTarget = event.target;
+      markerEl = eventTarget;
       markerObj = this.state.markers[eventTarget.id];
       this.itemClick(markerObj.name, '');
 
@@ -150,7 +180,9 @@ class App extends Component {
   }
 
   // Removes any toggled open styling among list items
-  // TODO: refactor without loop
+
+  //////// TODO: Refactor without loop. Return item that was open instead of all items, and use a global react ref for DOM element of items instead?
+
   rmMenuItemStyle() {
     const items = document.querySelectorAll('.list-item');
     for (let i = 0; i < items.length; i++) {
@@ -177,20 +209,24 @@ class App extends Component {
   /**
    * Handles menu item click and simulates map marker click
    * @param {string} venue_name
-   * @param eventTarget - DOM element clicked. Empty by default to allow for a simulated click event.
+   * @param event - Empty by default to allow for a simulated click event.
    * 
    */
 
-  itemClick(venue_name, eventTarget = '') {
+  itemClick(venue_name, event = '') {
 
     // remove any already 'open' menu item styles
     let items = this.rmMenuItemStyle();
 
     // if the menu item was actually clicked, then toggle its style and simulate its corresponding map marker click
-    if (eventTarget !== '') {
+
+    ///////// TODO: fix bug: 'Enter' key only centers map on marker, no styling or popup...
+
+    if (event.type === 'click' || (event.key === 'Enter' || event.key === ' ')) {
+      let eventTarget = event.target;
       eventTarget.classList.toggle('open');
       this.markerClick(venue_name, '');
-    } else {
+    } else if (event === '') {
       // otherwise loop through to find the DOM element with inner HTML matching the venue name and toggle its style
       for (let i = 0; i < items.length; i++) {
         if (items[i].innerHTML === venue_name) {
@@ -498,9 +534,9 @@ class App extends Component {
     let popupComp = '';
     if (this.state.open !== '') {
       let mObj = this.state.open;
-      // TODO: add props for venue image and rating
+      // TODO: pass real rating to props
       popupComp = (
-        <Popup className='my-popup' rating='3.0' venue={mObj}/>
+        <Popup className='my-popup' rating='3.0' venue={mObj} buttonRef={this.buttonEl} close={this.closePopup}/>
       )
     }
 
@@ -519,22 +555,23 @@ class App extends Component {
         <div>
           {popupComp}
         </div>
-        
 
         {
           // create DOM element with ref for each marker to be rendered
           this.markerRef.map((reference) => {
             n++;
             return (
-              <div className='marker' id={n - 1} key={n} ref={reference} onClick={(e) => this.markerClick('', e.target)} />
+              <div className='marker' id={n - 1} key={n} ref={reference} onClick={(e) => this.markerClick('', e)} />
             )
           })
         }
         
       </Fragment>
 
-    );
-  }
+    ); 
+  }  
 }
+
+
 
 export default App;

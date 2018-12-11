@@ -229,6 +229,19 @@ select {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+#close-popup {
+  color: white;
+  background-color: #000;
+  font-family: sans-serif;
+  font-size: small;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 26px;
+  height: 30px;
+  padding: 8px;
+}
+
 @media screen and (max-width: 635px) {
   
   #map {

@@ -13,12 +13,12 @@ class List extends Component {
             markers.map((marker) => {
                 if(this.props.selection === 'All') {
                     return (
-                        <li key={marker.name} onClick={(e) => this.props.itemClick(marker.name, e.target)} className='list-item' tabindex="0">{marker.name}</li>
+                        <li key={marker.name} onKeyDown={(e) => this.props.itemClick(marker.name, e)} onClick={(e) => this.props.itemClick(marker.name, e)} className='list-item' role="button" tabIndex="0">{marker.name}</li>
                       )
                 } else {
                     if(this.props.selection === marker.category) {
                         return (
-                            <li key={marker.name} onClick={(e) => this.props.itemClick(marker.name, e.target)} className='list-item' tabindex="0">{marker.name}</li>
+                            <li key={marker.name} onKeyDown={(e) => this.props.itemClick(marker.name, e)} onClick={(e) => this.props.itemClick(marker.name, e)} className='list-item' role="button" tabIndex="0">{marker.name}</li>
                           )
                     }
                 }
