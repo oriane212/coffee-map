@@ -540,7 +540,7 @@ class App extends Component {
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
           <footer className='app-info'>More info about the app</footer>
         </section>
-        <section aria-label='Venue details'>
+        <section role='region' aria-live='polite' aria-label='Venue details'>
           {popupComp}
         </section>
 
