@@ -318,15 +318,6 @@ class App extends Component {
         // pass custom marker DOM element attached to marker reference at index
         let marker = new mapboxgl.Marker(this.markerRef[i].current)
           .setLngLat(feature.geometry.coordinates)
-        /*]].setPopup(new mapboxgl.Popup({ anchor: 'right', offset: 45, closeButton: false })
-          .setHTML(`
-        <div class='popup-text'>
-          <h2>${feature.properties.title}</h2>
-          <p>${feature.properties.description}</p>
-          <FontAwesomeIcon icon="star" />
-        </div>
-        `))
-        */
 
         // create object containing marker instance and venue data
         let markerData = {
@@ -336,9 +327,6 @@ class App extends Component {
           marker: marker,
           vID: '',
           photo: ''
-          /*onClick: function() {
-            App.markerClick(markerData.name);
-          }*/
         }
 
         // test: adding hard coded photo link works here
@@ -552,9 +540,9 @@ class App extends Component {
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
           <footer className='app-info'>More info about the app</footer>
         </section>
-        <div>
+        <section aria-label='Venue details'>
           {popupComp}
-        </div>
+        </section>
 
         {
           // create DOM element with ref for each marker to be rendered

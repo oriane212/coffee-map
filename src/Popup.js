@@ -21,24 +21,26 @@ class Popup extends Component {
         let stars = [];
         for (let i = 0; i < rating; i++) {
             stars.push(
-                <FontAwesomeIcon key={i} icon="star" />
+                <FontAwesomeIcon aria-hidden title='Venue rating' key={i} icon="star" />
             )
         }
 
         return (
-            <div className='my-popup'>
+            <article className='my-popup'>
+                <span className='sr-only'>Details for {this.props.venue.name}</span>
                 <span className='popup-img' style={ {backgroundImage: `url(${this.props.venue.photo})`}} role='img' aria-label={this.props.venue.name}></span>
                 <div className='popup-overlay'>
                     <div className='popup-text'>
                         <div className='stars'>
                             {stars}
+                            <span className='sr-only'>Venue rating is {this.props.rating} stars.</span>
                         </div>
                         <p className='venue-type'>{this.props.venue.category}</p>
-                        <p className='venue-details'>{this.props.venue.address}</p>
+                        <address className='venue-details'>{this.props.venue.address}</address>
                     </div>
                     <button ref={this.props.buttonRef} id="close-popup" onKeyDown={(e) => this.props.close(e)} onClick={(e) => this.props.close(e)} aria-label="close">X</button>
                 </div>
-            </div>
+            </article>
         )
     }
 }
