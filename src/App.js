@@ -40,8 +40,9 @@ class App extends Component {
         { category: 'Cafe', show: true },
         { category: 'Restaurant', show: true }
       ],*/
-      selection: 'All', 
-      open: ''
+      selection: 'All',
+      open: '',
+      details: ''
     };
 
     this.itemClick = this.itemClick.bind(this);
@@ -61,7 +62,7 @@ class App extends Component {
    */
   closePopup(event) {
     if (event.type === 'click' || (event.key === 'Enter' || event.key === ' ')) {
-    
+
       this.rmMarkerStyle();
       // TODO: DOM element of items should be global ref...
       const items = this.rmMenuItemStyle();
@@ -442,6 +443,8 @@ class App extends Component {
         markers: markers
       })
 
+      /*
+
       // TODO: wrap below in a separate function that takes markers array or is called when markers in state is updated...
       let proms = [];
       this.state.markers.forEach((marker) => {
@@ -465,8 +468,9 @@ class App extends Component {
         this.setState({
           markers: markers
         })
-
       })
+
+      */
 
     });
 
@@ -481,6 +485,51 @@ class App extends Component {
     })
     */
 
+  }
+
+  componentDidUpdate() {
+    
+    // fetch venue details if they have not already been fetched or not currently being fetched
+    if (this.state.details === '') {
+
+      // update state of details to prevent repeated fetch calls while in progress
+      this.setState({
+        details: 'fetching'
+      })
+      console.log('fetching');
+      
+      let proms = [];
+      let markers = this.state.markers;
+      markers.forEach((marker) => {
+        // simulate asynch fetch for testing without having to use Foursquare API
+        // TODO: replace with promise using fetch and Foursquare API
+        let prom = new Promise(function (resolve, reject) {
+          setTimeout(resolve, 5000, 'https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg');
+        });
+        proms.push(prom);
+      })
+
+      Promise.all(proms).then((proms) => {
+
+        markers.forEach((marker, index) => {
+          marker.photo = proms[index];
+          console.log(proms[index]);
+        })
+
+        // update array of markers in state
+        this.setState({
+          markers: markers
+        })
+
+        // update state of details when all fetching is complete
+        this.setState({
+          details: 'fetched'
+        })
+        console.log('fetched');
+      })
+
+    }
+    
   }
 
   render() {
@@ -524,7 +573,7 @@ class App extends Component {
       let mObj = this.state.open;
       // TODO: pass real rating to props
       popupComp = (
-        <Popup className='my-popup' rating='3.0' venue={mObj} buttonRef={this.buttonEl} close={this.closePopup}/>
+        <Popup className='my-popup' rating='3.0' venue={mObj} buttonRef={this.buttonEl} close={this.closePopup} />
       )
     }
 
@@ -553,11 +602,11 @@ class App extends Component {
             )
           })
         }
-        
+
       </Fragment>
 
-    ); 
-  }  
+    );
+  }
 }
 
 
