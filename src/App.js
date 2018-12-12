@@ -327,168 +327,29 @@ class App extends Component {
           address: feature.place_name,
           marker: marker,
           vID: '',
-          photo: ''
+          details: ''
         }
-
-        // test: adding hard coded photo link works here
-        //markerData.photo = `https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg`;
-
-
-        /*
-
-        //////////// start Foursquare /////////////////////
-
-        // fetch data for venue using Foursquare's Places API search
-        fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=1&ll=${markerData.marker._lngLat.lat},${markerData.marker._lngLat.lng}&query=${markerData.name}`)
-          .then((response) => {
-            return response.json();
-          })
-          .then((myJson) => {
-            //console.log(myJson);
-            console.log(myJson.response.venues[0]);
-            return myJson.response.venues[0].id;
-          })
-          .then((vID) => {
-            markerData.vID = vID;
-
-            ////////////////
-            // TODO: simulate asynchronous fetch for photo data with hardcoded photo data
-            //////////////// 
-
-            // for now, only fetches for detailed venue info for one venue at a given index (to not exceed quota)
-            if (i === 18) {
-
-              // fetch more detailed data for venue using Foursquare's Places API VENUE_ID
-              fetch(`https://api.foursquare.com/v2/venues/${markerData.vID}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180923`)
-                .then((response) => {
-                  return response.json();
-                })
-                .then((myJson) => {
-                  console.log(myJson);
-                  //console.log(myJson.response.venue.bestPhoto);
-                  if (myJson.response.venue.bestPhoto != null) {
-                    let pre = myJson.response.venue.bestPhoto.prefix;
-                    let suf = myJson.response.venue.bestPhoto.suffix;
-                    //return myJson.response.venue.bestPhoto;
-                    return [pre, suf];
-                  } else {
-                    return []
-                  }
-                  //return markers[2];
-                })
-                .then((dataArr) => {
-                  markerData.photo = dataArr; // works
-                  console.log(markerData); // works
-                  console.log(markerData.photo);
-                  console.log(markerData.photo[0]);
-                  //console.log(markerData[photo]); // doesn't work
-                })
-
-            }
-
-          })
-          .catch(function () {
-            console.log('error');
-          });
-
-        //////////////// end Foursquare /////////////////////
-
-        */
 
         // push markerData to array of markers
         markers.push(markerData);
 
-        /*
-        // start test code
-        if (i === 3) {
-          // store array of markers in state
-          this.setState({
-            markers: markers
-          })
-          console.log(this.state.markers[3].photo[0]);
-          console.log(this.state.markers[3].photo);
-          console.log(this.state.markers[3]['photo']);
-          //console.log(this.state.markers[3][photo]);
-          console.log(this.state.markers[3]);
-        }
-        // end test code
-        */
 
         i++;
 
       })
 
-      /*
-      //////// test: this works too
-      markers.forEach((marker) => {    
-        marker.photo = `https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg`;
-      })
-      */
-
-      /*
-        // response for markers[1] for example:
-        Json.response.venue.bestPhoto
-          .prefix: 'https://fastly.4sqi.net/img/general/',
-          .height: 540,
-          .width: 540,
-          .id: '502406b3e4b090dce170f678',
-          .suffix: '/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg'
-      })
-        // to construct this URL from photo data:
-        https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg
-      */
-
       // store array of markers in state
       this.setState({
         markers: markers
       })
 
-      /*
-
-      // TODO: wrap below in a separate function that takes markers array or is called when markers in state is updated...
-      let proms = [];
-      this.state.markers.forEach((marker) => {
-        // simulate asynch fetch for testing without having to use Foursquare API
-        // TODO: replace with promise using fetch and Foursquare API
-        let prom = new Promise(function(resolve, reject) {
-          setTimeout(resolve, 5000, 'https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg');
-        });
-        proms.push(prom);
-        
-      })
-
-      Promise.all(proms).then((proms) => {
-        
-        markers.forEach((marker,index) => {
-          marker.photo = proms[index];
-          console.log(proms[index]);
-        })
-        
-        // update array of markers in state
-        this.setState({
-          markers: markers
-        })
-      })
-
-      */
 
     });
-
-    // test: this does not work here
-    /*
-    this.state.markers.forEach((marker) => {
-      marker.photo = `https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg`;
-      // store array of markers in state
-      this.setState({
-        markers: markers
-      })
-    })
-    */
 
   }
 
   componentDidUpdate() {
-    
+
     // fetch venue details if they have not already been fetched or not currently being fetched
     if (this.state.details === '') {
 
@@ -497,23 +358,42 @@ class App extends Component {
         details: 'fetching'
       })
       console.log('fetching');
-      
+
       let proms = [];
       let markers = this.state.markers;
       markers.forEach((marker) => {
-        // simulate asynch fetch for testing without having to use Foursquare API
-        // TODO: replace with promise using fetch and Foursquare API
-        let prom = new Promise(function (resolve, reject) {
-          setTimeout(resolve, 5000, 'https://fastly.4sqi.net/img/general/300x300/0An7tGCgxhWoXdW9L0pfQiLGumhvIF6aH02GEd2HC_A.jpg');
-        });
+        // fetch data for venue using Foursquare's Places API search
+        let prom = (
+          fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=1&ll=${marker.marker._lngLat.lat},${marker.marker._lngLat.lng}&query=${marker.name}`)
+            .then((response) => {
+              return response.json();
+            })
+            .then((myJson) => {
+              //console.log(myJson);
+              console.log(myJson.response.venues[0]);
+              return myJson.response.venues[0].id;
+            })
+        )
+
         proms.push(prom);
       })
+
 
       Promise.all(proms).then((proms) => {
 
         markers.forEach((marker, index) => {
-          marker.photo = proms[index];
-          console.log(proms[index]);
+
+          // fetch details using proms[index], which should be the venue id
+          // then set the marker.details to the response
+          fetch(`https://api.foursquare.com/v2/venues/${proms[index]}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180923`)
+            .then((response) => {
+              return response.json();
+            })
+            .then((myJson) => {
+              console.log(myJson);
+              marker.details = myJson;
+            })
+
         })
 
         // update array of markers in state
@@ -529,31 +409,10 @@ class App extends Component {
       })
 
     }
-    
+
   }
 
   render() {
-
-    let imgTests = [];
-
-    // TODO: create image for each marker from photo data stored in this.state.markers
-    // latest state does not appear to be reflected in render...
-    // test code below results in an array consisting of a string "undefined300x300undefined" for each marker stored in state, eventhough all the photo data appears to have been successfully fetched and stored for each marker (ie, it shows up when inspecting the app's State in React dev tools)
-    // start test code
-    /*
-    if (this.state.markers.length > 0) {
-      this.state.markers.forEach((markerinArry) => {
-        //imgTest = (<img src='' />);
-        //imgTest.src = markerinArry.photo[0];
-        let imgSrc = `${markerinArry.photo[0]}300x300${markerinArry.photo[1]}`;
-        imgTests.push(imgSrc);
-      })
- 
-      console.log(imgTests);
-    }
-    */
-    // end test code
-
 
     // filter and add markers to map
     this.state.markers.forEach((markerObj) => {

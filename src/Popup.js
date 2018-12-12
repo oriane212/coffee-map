@@ -28,7 +28,7 @@ class Popup extends Component {
         return (
             <article className='my-popup'>
                 <span className='sr-only'>Details for {this.props.venue.name}</span>
-                <span className='popup-img' style={ {backgroundImage: `url(${this.props.venue.photo})`}} role='img' aria-label={this.props.venue.name}></span>
+                <span className='popup-img' role='img' aria-label={this.props.venue.name}></span>
                 <div className='popup-overlay'>
                     <div className='popup-text'>
                         <div className='stars'>
@@ -45,6 +45,9 @@ class Popup extends Component {
     }
 }
 
-
+// temporarily taken out of span.popup-img...
+// TODO: change the below backgroundImage url to photo stored in venue details:
+    // ${this.props.venue.details.response.venue.bestPhoto.prefix}300x300${this.props.venue.details.response.venue.bestPhoto.suffix}
+// style={ {backgroundImage: `url(${this.props.venue.photo})`}}
 
 export default Popup;
