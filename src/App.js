@@ -290,10 +290,11 @@ class App extends Component {
               // store feature object
               const feature = response.body.features[0];
               console.log(feature);
-              // add title and description properties
+              // add title, description, and comedian properties
               feature.properties = {
                 title: place.name,
-                description: place.type
+                description: place.type,
+                comedian: place.comedian
               }
               return feature;
             } else {
@@ -325,6 +326,7 @@ class App extends Component {
           name: feature.properties.title,
           category: feature.properties.description,
           address: feature.place_name,
+          comedian: feature.properties.comedian,
           marker: marker,
           vID: '',
           details: ''
@@ -348,6 +350,8 @@ class App extends Component {
 
   }
 
+  // TODO: uncomment when ready to test with fetched data again..
+  /*
   componentDidUpdate() {
 
     // fetch venue details if they have not already been fetched or not currently being fetched
@@ -411,6 +415,7 @@ class App extends Component {
     }
 
   }
+  */
 
   render() {
 
@@ -430,9 +435,8 @@ class App extends Component {
     let popupComp = '';
     if (this.state.open !== '') {
       let mObj = this.state.open;
-      // TODO: pass real rating to props
       popupComp = (
-        <Popup className='my-popup' rating='3.0' venue={mObj} buttonRef={this.buttonEl} close={this.closePopup} />
+        <Popup className='my-popup' venue={mObj} buttonRef={this.buttonEl} close={this.closePopup} />
       )
     }
 

@@ -111,28 +111,44 @@ span.popup-img {
 
 div.popup-text {
   background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7), rgba(0,0,0,0.4));
-  padding: 180px 26px;
+  padding: 30px 26px;
   height: 530px;
 }
 
 p.venue-type {
-  font-size: 0.3em;
+  font-size: 0.4em;
   text-transform: uppercase;
   font-weight: bolder;
-  letter-spacing: 1px;
+  letter-spacing: 4px;
   padding: 10px 0;
-  font-family: sans-serif;
+}
+
+.overview {
+  font-size: 0.6em;
+  margin: 60px 0;
+}
+
+.comedian {
+  font-weight: 800;
+  font-size: 120%;
 }
 
 .venue-details {
-  font-size: 0.6em;
+  font-size: 0.5em;
+  margin: 16px 0;
 }
 
-.stars {
-  font-size: x-small;
+.rating {
+  font-size: 0.7em;
+  margin: 6px 0;
 }
 
-.stars svg {
+.price {
+  font-size: small;
+  margin: 6px 0;
+}
+
+.price svg {
   margin: 2px;
 }
 
@@ -287,11 +303,28 @@ select {
   div.popup-text {
     width: 100%;
     height: auto;
-    font-size: 200%;
+    font-size: 180%;
     padding: 150px 20px 20px;
     position: absolute;
     bottom: 0;
     background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.7));
+  }
+
+  .overview {
+    margin: 10px 0;
+  }
+
+  .rating {
+    display: inline-block;
+    margin: 6px 20px 6px 0;
+  }
+
+  .price {
+    display: inline-block;
+  }
+
+  .venue-details {
+    margin: 0;
   }
 
   #popup {
@@ -300,6 +333,7 @@ select {
     z-index: 3000;
   }
 
+  /* TODO: test for various devices */
   .app-info {
     position: relative;
     top: 60px;
