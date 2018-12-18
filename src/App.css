@@ -46,6 +46,7 @@ h2 {
   right: 0;
   height: 100%;
   position: absolute;
+  background-color: rgba(240, 240, 239, 1);
 }
 
 canvas.mapboxgl-canvas {
@@ -78,6 +79,7 @@ div.mapboxgl-popup mapboxgl-popup-anchor-top {
   position: absolute;
   left: 33.33%;
   z-index: 1000;
+  background-color: rgba(0,0,0, 1);
 }
 
 .mapboxgl-popup-close-button {

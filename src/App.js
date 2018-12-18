@@ -5,7 +5,6 @@ import mapboxgl from 'mapbox-gl';
 import mbxGeocoding from '@mapbox/mapbox-sdk/services/geocoding';
 import * as CoffeePlaces from './CoffeePlaces';
 import List from './List';
-import Filters from './Filters';
 import Select from './Select';
 import Popup from './Popup';
 //var mbxGeocoding = require('@mapbox/mapbox-gl-geocoder');
@@ -34,12 +33,7 @@ class App extends Component {
       lat: 40.6786204,
       // TODO: zoom out further for smaller screen (use mapbox property expression?)
       zoom: 6.5,
-      //items: '',
       markers: [],
-      /*filters: [
-        { category: 'Cafe', show: true },
-        { category: 'Restaurant', show: true }
-      ],*/
       selection: 'All',
       open: '',
       details: ''
@@ -452,7 +446,7 @@ class App extends Component {
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
           <footer className='app-info'>More info about the app</footer>
         </section>
-        <section id='popup' role='region' aria-live='polite' aria-label='Venue details'>
+        <section id='popup' aria-live='polite' aria-label='Venue details'>
           {popupComp}
         </section>
 
@@ -465,10 +459,9 @@ class App extends Component {
             )
           })
         }
-
       </Fragment>
-
     );
+    
   }
 }
 

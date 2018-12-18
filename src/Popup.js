@@ -10,50 +10,70 @@ class Popup extends Component {
 
     componentDidMount() {
         this.props.buttonRef.current.focus();
-    }    
+    }
 
     render() {
+        
+        let rating = null;
+        let tier = null;
+        let message = null;
+        let imgSpan = '';
+        let price = '';
+        
+        if (this.props.venue.details !== '') {
+            // set rating
+            rating = this.props.venue.details.reponse.venue.rating;
 
-        //// TODO: replace hardcoded variables with venue props /////////////
+            // create DOM el for venue img
+            //let prefix = 'https://fastly.4sqi.net/img/general/';
+            //let suffix = '/145402484_1oXuwMI_RDXy02VTV0bsrwC9DXXJJDqjdbEEXqsV-p0.jpg';
+            let prefix = this.props.venue.details.response.venue.bestPhoto.prefix;
+            let suffix = this.props.venue.details.response.venue.bestPhoto.suffix;
+            
+            if (prefix != null && suffix != null) {
+                let path = prefix + '300x300' + suffix;
+                imgSpan = (
+                    <span className='popup-img' style={{ backgroundImage: `url(${path})` }} role='img' aria-label={this.props.venue.name}></span>
+                )
+            }
 
-        //let rating = this.props.venue.details.reponse.venue.rating;
-        let rating = 8.6;
+            // create DOM el for price
+            //tier = 2;
+            //message = 'Moderate';
+            tier = this.props.venue.details.response.venue.price.tier;
+            message = this.props.venue.details.response.venue.price.message;
+            if (tier != null && message != null) {
+                let dollarSigns = [];
+                for (let i = 0; i < tier; i++) {
+                    dollarSigns.push(
+                        <FontAwesomeIcon aria-hidden title='Venue price' key={i} icon='dollar-sign' />
+                    )
+                }
+                price = (
+                    <div className='price'>
+                        {dollarSigns}
+                        <span className='sr-only'>Venue price point is {message}</span>
+                    </div>
+                )
+            }
 
-        // create path for photo
-        let prefix = 'https://fastly.4sqi.net/img/general/';
-        let suffix = '/145402484_1oXuwMI_RDXy02VTV0bsrwC9DXXJJDqjdbEEXqsV-p0.jpg';
-        let path = prefix + '300x300' + suffix;
-
-        // price
-        //let tier = this.props.venue.details.response.venue.price.tier;
-        //let message = this.props.venue.details.response.venue.price.message;
-        let tier = 2;
-        let message = 'Moderate';
-        let dollarSigns = [];
-        for (let i = 0; i < tier; i++) {
-            dollarSigns.push(
-                <FontAwesomeIcon aria-hidden title='Venue price' key={i} icon='dollar-sign' />
-            )
         }
 
         return (
             <article className='my-popup'>
-                <span className='sr-only'>Details for {this.props.venue.name}</span>
-                <span className='popup-img' style={ {backgroundImage: `url(${path})`}} role='img' aria-label={this.props.venue.name}></span>
+                {imgSpan}
                 <div className='popup-overlay'>
                     <div className='popup-text'>
                         <div className='overview'><span className='comedian'>Seinfeld</span> had coffee here with <span className='comedian'>{this.props.venue.comedian}</span></div>
                         <p className='venue-type'>{this.props.venue.category}</p>
-                        <div className='rating'>
-                            <div aria-hidden title='rating'>{rating}/10</div>
-                            <span className='sr-only'>Venue rating is {rating} out of 10.</span>
-                        </div>
-                        <div className='price'>
-                            {dollarSigns}
-                            <span className='sr-only'>Venue price point is {message}</span>
-                        </div>
+                        {rating != null ? (
+                            <div className='rating'>
+                                <div aria-hidden title='rating'>{rating}/10</div>
+                                <span className='sr-only'>Venue rating is {rating} out of 10.</span>
+                            </div>
+                        ) : ''}
+                        {price}
                         <address className='venue-details'>{this.props.venue.address}</address>
-
                     </div>
                     <button ref={this.props.buttonRef} id="close-popup" onKeyDown={(e) => this.props.close(e)} onClick={(e) => this.props.close(e)} aria-label="close">X</button>
                 </div>
@@ -61,10 +81,5 @@ class Popup extends Component {
         )
     }
 }
-
-// temporarily taken out of span.popup-img...
-// TODO: change the below backgroundImage url to photo stored in venue details:
-    // ${this.props.venue.details.response.venue.bestPhoto.prefix}300x300${this.props.venue.details.response.venue.bestPhoto.suffix}
-// style={ {backgroundImage: `url(${this.props.venue.photo})`}}
 
 export default Popup;
