@@ -41,6 +41,8 @@ class List extends Component {
         let listDivs = '';
         if (this.props.markers !== []) {
             listDivs = this.createList(this.props.markers);
+        } else {
+            listDivs = (<li className="error-msg">There was a problem loading venue data. Try refreshing.</li>)
         }
         return (
             <ul className='menu-items-container'>
