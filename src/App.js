@@ -7,7 +7,6 @@ import * as CoffeePlaces from './CoffeePlaces';
 import List from './List';
 import Select from './Select';
 import Popup from './Popup';
-//var mbxGeocoding = require('@mapbox/mapbox-gl-geocoder');
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
 
@@ -31,7 +30,6 @@ class App extends Component {
     this.state = {
       lng: -73.0226071,
       lat: 40.6786204,
-      // TODO: zoom out further for smaller screen (use mapbox property expression?)
       zoom: 6.5,
       markers: [],
       selection: 'All',
@@ -40,13 +38,11 @@ class App extends Component {
     };
 
     this.itemClick = this.itemClick.bind(this);
-    //this.handleInputChange = this.handleInputChange.bind(this);
     this.onSelection = this.onSelection.bind(this);
     this.recenterMap = this.recenterMap.bind(this);
     this.zoomTo = this.zoomTo.bind(this);
     this.markerClick = this.markerClick.bind(this);
     this.rmMenuItemStyle = this.rmMenuItemStyle.bind(this);
-    this.mapClick = this.mapClick.bind(this);
     this.rmMarkerStyle = this.rmMarkerStyle.bind(this);
     this.closePopup = this.closePopup.bind(this);
   }
@@ -77,8 +73,6 @@ class App extends Component {
     }
   }
 
-  // TODO: add button for recentering map?
-  // TODO: move center point left
   /**
    * Recenters the map and resets zoom level to default
    */
@@ -188,19 +182,6 @@ class App extends Component {
     return items;
   }
 
-  // TODO: should call rmMenuItemStyle() when 'button.mapboxgl-popup-close-button' clicked...
-  // and should NOT call rmMenuItemStyle() when any other popup content is clicked...
-  mapClick(event) {
-    if (event.target.className !== 'marker mapboxgl-marker mapboxgl-marker-anchor-center') {
-      this.rmMenuItemStyle();
-      this.rmMarkerStyle();
-      this.setState({
-        open: ''
-      })
-    }
-  }
-
-
   /**
    * Handles menu item click and simulates map marker click
    * @param {string} venue_name
@@ -214,13 +195,13 @@ class App extends Component {
     let items = this.rmMenuItemStyle();
 
     // if the menu item was actually clicked, then toggle its style and simulate its corresponding map marker click
-
-    ///////// TODO: fix bug: 'Enter' key only centers map on marker, no styling or popup...
-
-    if (event.type === 'click' || (event.key === 'Enter' || event.key === ' ')) {
+    // include event.key 'Spacebar' for older browsers
+    if (event.type === 'click' || event.key === ' ' || event.key === 'Spacebar') {
+    
       let eventTarget = event.target;
       eventTarget.classList.toggle('open');
       this.markerClick(venue_name, '');
+
     } else if (event === '') {
       // otherwise loop through to find the DOM element with inner HTML matching the venue name and toggle its style
       for (let i = 0; i < items.length; i++) {
@@ -231,16 +212,6 @@ class App extends Component {
     }
 
   }
-
-  /* unused function
-  handleInputChange(filter, event) {
-    const filtered = this.state.filters.filter(item => item.category !== filter.category);
-    const modified = { category: filter.category, show: !filter.show };
-    filtered.push(modified);
-    this.setState({
-      filters: filtered
-    })
-  }*/
 
   onSelection(event) {
     this.rmMarkerStyle();
@@ -310,7 +281,6 @@ class App extends Component {
       // create a marker instance for each feature object
       promises.forEach((feature) => {
 
-        // TODO: include attribution
         // pass custom marker DOM element attached to marker reference at index
         let marker = new mapboxgl.Marker(this.markerRef[i].current)
           .setLngLat(feature.geometry.coordinates)
@@ -328,8 +298,6 @@ class App extends Component {
 
         // push markerData to array of markers
         markers.push(markerData);
-
-
         i++;
 
       })
@@ -338,7 +306,6 @@ class App extends Component {
       this.setState({
         markers: markers
       })
-
 
     });
 
@@ -434,13 +401,13 @@ class App extends Component {
       )
     }
 
-    //
+    // initialize counter for creating marker elements
     let n = 0;
 
     /* ref instead of id? */
     return (
       <Fragment>
-        <section role='presentation' aria-label="Map view of listed venues" id="map" onClick={(e) => this.mapClick(e)}></section>
+        <section role='presentation' aria-label="Map view of listed venues" id="map"></section>
         <section aria-label="Filterable list of venues" className='sidebar pad2'>
           <Select selection={this.state.selection} onSelection={this.onSelection}></Select>
           <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
@@ -468,7 +435,5 @@ class App extends Component {
     
   }
 }
-
-
 
 export default App;
