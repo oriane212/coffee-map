@@ -21,11 +21,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.markerRef = [];
-    this.totalMarkers = 17;
+    this.totalMarkers = CoffeePlaces.coffeePlaces.length;
     // create an array of refs for each marker from total number of markers expected
     for (let i = 0; i < this.totalMarkers; i++) {
       this.markerRef.push(React.createRef());
     }
+    this.listItemsRef = React.createRef();
     this.buttonEl = React.createRef();
     this.state = {
       lng: -73.0226071,
@@ -51,19 +52,14 @@ class App extends Component {
    * Closes popup and removes 'open' styling
    */
   closePopup(event) {
-    if (event.type === 'click' || (event.key === 'Enter' || event.key === ' ')) {
+    if (event.type === 'click' || (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar' || event.key === 'Tab')) {
 
       this.rmMarkerStyle();
-      // TODO: DOM element of items should be global ref...
-      const items = this.rmMenuItemStyle();
+      const open_item = this.rmMenuItemStyle();
 
-      if (event.key === 'Enter' || event.key === ' ') {
-        // TODO: refactor?
-        for (let i = 0; i < items.length; i++) {
-          if (items[i].innerHTML === this.state.open.name) {
-            items[i].focus();
-          }
-        }
+      // for keyboard users, return focus back to list item element previously opened
+      if (event.type === 'keydown') {
+        open_item.focus();
       }
 
       this.setState({
@@ -137,7 +133,6 @@ class App extends Component {
     // if the marker was actually clicked, simulate its corresponding menu item click
     if (event !== '') {
       // store marker object for marker at index matching DOM element's id
-      //console.log(`${this.state.markers[eventTarget.id].name} clicked`);
       let eventTarget = event.target;
       markerEl = eventTarget;
       markerObj = this.state.markers[eventTarget.id];
@@ -169,18 +164,15 @@ class App extends Component {
   }
 
   // Removes any toggled open styling among list items
-
-  //////// TODO: Refactor without loop. Return item that was open instead of all items, and use a global react ref for DOM element of items instead?
-
   rmMenuItemStyle() {
-    const items = document.querySelectorAll('.list-item');
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].className === `list-item open`) {
-        items[i].className = `list-item`;
-      }
+    let item_open = document.querySelector('.open');
+    if (item_open != null) {
+      console.log(item_open);
+      item_open.classList.toggle('open');
     }
-    return items;
+    return item_open;
   }
+
 
   /**
    * Handles menu item click and simulates map marker click
@@ -192,7 +184,7 @@ class App extends Component {
   itemClick(venue_name, event = '') {
 
     // remove any already 'open' menu item styles
-    let items = this.rmMenuItemStyle();
+    this.rmMenuItemStyle();
 
     // if the menu item was actually clicked, then toggle its style and simulate its corresponding map marker click
     // include event.key 'Spacebar' for older browsers
@@ -204,9 +196,10 @@ class App extends Component {
 
     } else if (event === '') {
       // otherwise loop through to find the DOM element with inner HTML matching the venue name and toggle its style
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].innerHTML === venue_name) {
-          items[i].classList.toggle('open');
+      const list = this.listItemsRef.current.childNodes;
+      for (let item in list) {
+        if (list[item].textContent === venue_name) {
+          list[item].classList.toggle('open');
         }
       }
     }
@@ -410,7 +403,7 @@ class App extends Component {
         <section role='presentation' aria-label="Map view of listed venues" id="map"></section>
         <section aria-label="Filterable list of venues" className='sidebar pad2'>
           <Select selection={this.state.selection} onSelection={this.onSelection}></Select>
-          <List selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
+          <List listRef={this.listItemsRef} selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
           <footer className='app-info'>
             <p>Locations and other details for a handful of East Coast venues visited in Jerry Seinfeld’s show <i>Comedians in Cars Getting Coffee</i>.</p>
             <hr />

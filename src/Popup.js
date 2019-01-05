@@ -75,7 +75,7 @@ class Popup extends Component {
                         {price}
                         <address className='venue-details'>{this.props.venue.address}</address>
                     </div>
-                    <button ref={this.props.buttonRef} id="close-popup" onKeyDown={(e) => this.props.close(e)} onClick={(e) => this.props.close(e)} aria-label="close">X</button>
+                    <button tabIndex='0' ref={this.props.buttonRef} id="close-popup" onKeyDown={(e) => this.props.close(e)} onClick={(e) => this.props.close(e)} aria-label="close">X</button>
                 </div>
             </article>
         )

@@ -33,6 +33,7 @@ class List extends Component {
                           )
                     }
                 }
+            return list;
           })
         return list;
       }
@@ -45,7 +46,7 @@ class List extends Component {
             listDivs = (<li className="error-msg">There was a problem loading venue data. Try refreshing.</li>)
         }
         return (
-            <ul className='menu-items-container'>
+            <ul ref={this.props.listRef} className='menu-items-container'>
                 {listDivs}
             </ul>
         )
