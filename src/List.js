@@ -3,42 +3,47 @@ import './App.css';
 
 class List extends Component {
 
+    /**
+    * Creates an unordered list of interactive venue names from an array of marker objects
+    * @param {array} markers
+    * uses props to determine filtering
+    */
     createList(markers) {
         // create a list item for each venue if 'All' is selected
         // otherwise, create a list item for each venue with a category matching the user's selection
         let list =
             markers.map((marker) => {
-                if(this.props.selection === 'All') {
+                if (this.props.selection === 'All') {
                     return (
-                        <li key={marker.name} 
-                            onKeyDown={(e) => this.props.itemClick(marker.name, e)} 
-                            onClick={(e) => this.props.itemClick(marker.name, e)} 
-                            className='list-item' 
-                            role="button" 
+                        <li key={marker.name}
+                            onKeyDown={(e) => this.props.itemClick(marker.name, e)}
+                            onClick={(e) => this.props.itemClick(marker.name, e)}
+                            className='list-item'
+                            role="button"
                             tabIndex="0">
-                                {marker.name}
+                            {marker.name}
                         </li>
-                      )
+                    )
                 } else {
-                    if(this.props.selection === marker.category) {
+                    if (this.props.selection === marker.category) {
                         return (
-                            <li key={marker.name} 
-                                onKeyDown={(e) => this.props.itemClick(marker.name, e)} 
-                                onClick={(e) => this.props.itemClick(marker.name, e)} 
-                                className='list-item' 
-                                role="button" 
+                            <li key={marker.name}
+                                onKeyDown={(e) => this.props.itemClick(marker.name, e)}
+                                onClick={(e) => this.props.itemClick(marker.name, e)}
+                                className='list-item'
+                                role="button"
                                 tabIndex="0">
-                                    {marker.name}
+                                {marker.name}
                             </li>
-                          )
+                        )
                     }
                 }
-            return list;
-          })
+                return list;
+            })
         return list;
-      }
+    }
 
-      render() {
+    render() {
         let listDivs = '';
         if (this.props.markers !== []) {
             listDivs = this.createList(this.props.markers);
@@ -50,7 +55,7 @@ class List extends Component {
                 {listDivs}
             </ul>
         )
-      }
+    }
 }
 
 export default List;

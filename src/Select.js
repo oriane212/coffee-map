@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
+// Select menu for filtering list of venues by category
 class Select extends Component {
 
     render() {
@@ -15,14 +16,13 @@ class Select extends Component {
                     id="filter-list"
                     value={this.props.selection}
                     onChange={(event) => this.props.onSelection(event)}>
-                {categories.map((category) => {
-                    return (
-                        <option key={category} value={category}>{category}</option>
-                    )
-                })}
+                    {categories.map((category) => {
+                        return (
+                            <option key={category} value={category}>{category}</option>
+                        )
+                    })}
                 </select>
             </nav>
-            
         )
     }
 }

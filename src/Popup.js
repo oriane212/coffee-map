@@ -6,6 +6,7 @@ import { faDollarSign } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faDollarSign);
 
+// Popup for venue displaying venue details
 class Popup extends Component {
 
     componentDidMount() {
@@ -13,7 +14,7 @@ class Popup extends Component {
     }
 
     render() {
-        
+        // initialize venue detail variables
         let rating = null;
         let tier = null;
         let message = null;
@@ -25,11 +26,8 @@ class Popup extends Component {
             rating = this.props.venue.details.reponse.venue.rating;
 
             // create DOM el for venue img
-            //let prefix = 'https://fastly.4sqi.net/img/general/';
-            //let suffix = '/145402484_1oXuwMI_RDXy02VTV0bsrwC9DXXJJDqjdbEEXqsV-p0.jpg';
             let prefix = this.props.venue.details.response.venue.bestPhoto.prefix;
             let suffix = this.props.venue.details.response.venue.bestPhoto.suffix;
-            
             if (prefix != null && suffix != null) {
                 let path = prefix + '300x300' + suffix;
                 imgSpan = (
@@ -38,8 +36,6 @@ class Popup extends Component {
             }
 
             // create DOM el for price
-            //tier = 2;
-            //message = 'Moderate';
             tier = this.props.venue.details.response.venue.price.tier;
             message = this.props.venue.details.response.venue.price.message;
             if (tier != null && message != null) {

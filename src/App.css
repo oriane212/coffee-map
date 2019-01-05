@@ -59,11 +59,6 @@ canvas.mapboxgl-canvas {
   top: -10px;
   height: 100%;
 }
-/*
-div.mapboxgl-popup mapboxgl-popup-anchor-top {
-  transform: none;
-}*/
-
 
 .my-popup {
   text-align: center;
@@ -170,25 +165,6 @@ p.venue-type {
   height: 27px;
   width: 35px;
 }
-/*
-div.marker.open {
-  z-index: 10;
-  background-color: white;
-  opacity: 1;
-  border-radius: 30px;
-  border: 2px solid #673b3b;
-  height: 23px;
-  width: 25px;
-}
-*/
-
-/*
-div.marker:hover {
-  width: 25px;
-  height: 20px;
-  opacity: 1.0;
-}
-*/
 
 .list-item {
   cursor: pointer;
@@ -285,11 +261,6 @@ hr {
     z-index: unset;
   }
 
-  /*
-  .mapboxgl-popup-content {
-    width: 175px;
-  }
-  */
   .select-container {
     position: fixed;
     top: 300px;

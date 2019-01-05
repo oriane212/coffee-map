@@ -50,22 +50,21 @@ class App extends Component {
 
   /**
    * Closes popup and removes 'open' styling
+   * @param event - mouse or keyboard event
    */
   closePopup(event) {
     if (event.type === 'click' || (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar' || event.key === 'Tab')) {
-
+      // remove any 'open' styles
       this.rmMarkerStyle();
       const open_item = this.rmMenuItemStyle();
-
       // for keyboard users, return focus back to list item element previously opened
       if (event.type === 'keydown') {
         open_item.focus();
       }
-
+      // empty any marker info from 'open' state 
       this.setState({
         open: ''
       })
-
     }
   }
 
@@ -77,6 +76,7 @@ class App extends Component {
     if (window.innerWidth < 450) {
       zoomlevel = 6.5;
     }
+    // Mapbox flyTo method
     this.map.flyTo({
       center: [
         this.state.lng,
@@ -110,6 +110,7 @@ class App extends Component {
       //speed: 1.2,
       //curve: 2
     })
+    // update open state with marker info
     this.setState({
       open: markerObj
     })
@@ -121,15 +122,12 @@ class App extends Component {
    * @param {string} venue_name - Empty by default, and remains empty unless the click was simulated.
    * @param event - Empty by default to allow for a simulated click event.
    */
-
   markerClick(venue_name = '', event = '') {
-
     // remove any already 'open' marker styles
     this.rmMarkerStyle();
-
+ 
     let markerObj = '';
     let markerEl = '';
-
     // if the marker was actually clicked, simulate its corresponding menu item click
     if (event !== '') {
       // store marker object for marker at index matching DOM element's id
@@ -137,7 +135,6 @@ class App extends Component {
       markerEl = eventTarget;
       markerObj = this.state.markers[eventTarget.id];
       this.itemClick(markerObj.name, '');
-
     } else {
       // otherwise, use the venue name to locate the marker in state, and use index matching the marker's DOM element ID
       this.state.markers.forEach((marker, index) => {
@@ -147,14 +144,15 @@ class App extends Component {
         }
       })
     }
-
     // add open-marker class to DOM marker
     markerEl.classList.toggle('open-marker');
     // zoom in and center map on marker location
     this.zoomTo(markerObj);
-
   }
 
+  /**
+   * Removes any 'open' styling from markers
+   */
   rmMarkerStyle() {
     const open_marker = document.querySelector('.open-marker');
     if (open_marker != null) {
@@ -163,7 +161,9 @@ class App extends Component {
     return;
   }
 
-  // Removes any toggled open styling among list items
+  /**
+   * Removes any open styling among list items
+   */
   rmMenuItemStyle() {
     let item_open = document.querySelector('.open');
     if (item_open != null) {
@@ -173,27 +173,21 @@ class App extends Component {
     return item_open;
   }
 
-
   /**
    * Handles menu item click and simulates map marker click
    * @param {string} venue_name
    * @param event - Empty by default to allow for a simulated click event.
    * 
    */
-
   itemClick(venue_name, event = '') {
-
     // remove any already 'open' menu item styles
     this.rmMenuItemStyle();
-
     // if the menu item was actually clicked, then toggle its style and simulate its corresponding map marker click
     // include event.key 'Spacebar' for older browsers
     if (event.type === 'click' || event.key === ' ' || event.key === 'Spacebar') {
-    
       let eventTarget = event.target;
       eventTarget.classList.toggle('open');
       this.markerClick(venue_name, '');
-
     } else if (event === '') {
       // otherwise loop through to find the DOM element with inner HTML matching the venue name and toggle its style
       const list = this.listItemsRef.current.childNodes;
@@ -203,9 +197,12 @@ class App extends Component {
         }
       }
     }
-
   }
 
+  /**
+   * Resets map and list with filtered results on menu selection
+   * @param event - mouse or keyboard event
+   */
   onSelection(event) {
     this.rmMarkerStyle();
     this.rmMenuItemStyle();
@@ -215,11 +212,16 @@ class App extends Component {
     this.recenterMap();
   }
 
+
+  /**
+   * When App component mounts:
+      * initialize map object
+      * fetch forward geocoded locations of venues
+      * create marker objects
+   */
   componentDidMount() {
-
-    // get current values stored in state
+    // get center point and zoom values stored in state
     const { lng, lat, zoom } = this.state;
-
     // initialize map object
     this.map = new mapboxgl.Map({
       container: 'map',
@@ -227,13 +229,10 @@ class App extends Component {
       center: [lng, lat],
       zoom
     });
-
     // create geocoding client
     const geocodingClient = mbxGeocoding({ accessToken: mapboxgl.accessToken });
-
-    // array to store promises
+    // initialize an array to store promises for geocoded addresses
     let promises = [];
-
     // forward geocode each coffee place address
     CoffeePlaces.coffeePlaces.forEach((place) => {
       // store each promise for feature object containing geocoded address
@@ -263,21 +262,16 @@ class App extends Component {
       // store each promise in promises array
       promises.push(eachPromise);
     })
-
     // create array to store markers
     let markers = [];
-
     // return promises
     Promise.all(promises).then((promises) => {
-
       let i = 0;
       // create a marker instance for each feature object
       promises.forEach((feature) => {
-
         // pass custom marker DOM element attached to marker reference at index
         let marker = new mapboxgl.Marker(this.markerRef[i].current)
           .setLngLat(feature.geometry.coordinates)
-
         // create object containing marker instance and venue data
         let markerData = {
           name: feature.properties.title,
@@ -288,35 +282,31 @@ class App extends Component {
           vID: '',
           details: ''
         }
-
         // push markerData to array of markers
         markers.push(markerData);
         i++;
-
       })
-
       // store array of markers in state
       this.setState({
         markers: markers
       })
-
     });
-
   }
 
+  /**
+   * When App component updates:
+      * fetch venue details (if they have not already been fetched or are not currently being fetched)
+      * update markers in state
+   */
   // TODO: uncomment when ready to test with fetched data again..
   /*
   componentDidUpdate() {
-
-    // fetch venue details if they have not already been fetched or not currently being fetched
     if (this.state.details === '') {
-
       // update state of details to prevent repeated fetch calls while in progress
       this.setState({
         details: 'fetching'
       })
       console.log('fetching');
-
       let proms = [];
       let markers = this.state.markers;
       markers.forEach((marker) => {
@@ -332,15 +322,11 @@ class App extends Component {
               return myJson.response.venues[0].id;
             })
         )
-
         proms.push(prom);
       })
 
-
       Promise.all(proms).then((proms) => {
-
         markers.forEach((marker, index) => {
-
           // fetch details using proms[index], which should be the venue id
           // then set the marker.details to the response
           fetch(`https://api.foursquare.com/v2/venues/${proms[index]}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180923`)
@@ -351,28 +337,23 @@ class App extends Component {
               console.log(myJson);
               marker.details = myJson;
             })
-
         })
-
         // update array of markers in state
         this.setState({
           markers: markers
         })
-
         // update state of details when all fetching is complete
         this.setState({
           details: 'fetched'
         })
         console.log('fetched');
       })
-
     }
-
   }
   */
 
+ 
   render() {
-
     // filter and add markers to map
     this.state.markers.forEach((markerObj) => {
       if (this.state.selection !== 'All') {
@@ -385,7 +366,7 @@ class App extends Component {
         markerObj.marker.addTo(this.map);
       }
     })
-
+    // initialize popup and create Popup component for a venue if its marker is open
     let popupComp = '';
     if (this.state.open !== '') {
       let mObj = this.state.open;
@@ -393,11 +374,9 @@ class App extends Component {
         <Popup className='my-popup' venue={mObj} buttonRef={this.buttonEl} close={this.closePopup} />
       )
     }
-
     // initialize counter for creating marker elements
     let n = 0;
 
-    /* ref instead of id? */
     return (
       <Fragment>
         <section role='presentation' aria-label="Map view of listed venues" id="map"></section>
@@ -413,7 +392,6 @@ class App extends Component {
         <section id='popup' aria-live='polite' aria-label='Venue details'>
           {popupComp}
         </section>
-
         {
           // create DOM element with ref for each marker to be rendered
           this.markerRef.map((reference) => {
