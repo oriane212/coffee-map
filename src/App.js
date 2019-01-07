@@ -384,9 +384,7 @@ class App extends Component {
           <Select selection={this.state.selection} onSelection={this.onSelection}></Select>
           <List listRef={this.listItemsRef} selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>
           <footer className='app-info'>
-            <p>Locations and other details for a handful of East Coast venues visited in Jerry Seinfeld’s show <i>Comedians in Cars Getting Coffee</i>.</p>
-            <hr />
-            <p style={{fontSize:0.8+'em', lineHeight:1.5+'em'}}>This web app was built with React and uses Mapbox GL JS and Foursquare’s Places APIs.</p>
+            <p><i>This web app was built with React and uses Mapbox GL JS and Foursquare’s Places APIs.</i></p>
           </footer>
         </section>
         <section id='popup' aria-live='polite' aria-label='Venue details'>
