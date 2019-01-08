@@ -7,12 +7,6 @@ export const coffeePlaces = [
       comedian: 'Alec Baldwin'
     },
     {
-      name: 'Allendale Eats',
-      type: 'Diner',
-      address: '101 w allendale ave, allendale, new jersey 07401',
-      comedian: 'Chris Rock'
-    },
-    {
       name: 'Massapequa Diner',
       type: 'Diner',
       address: '4420 Sunrise Hwy, Massapequa, NY 11758',
@@ -43,13 +37,13 @@ export const coffeePlaces = [
       comedian: 'Tracy Morgan'
     },
     {
-      name: `Second Avenue Deli`,
+      name: `2nd Ave Deli`,
       type: 'Restaurant',
       address: '162 E 33rd St, New York, NY 10016',
       comedian: 'Jim Gaffigan'
     },
     {
-      name: `Pleasantville Diner`,
+      name: `Pleasantville Diner Restaurant`,
       type: 'Diner',
       address: '10 Memorial Plaza, Pleasantville, NY 10570',
       comedian: 'Steve Martin'
@@ -61,7 +55,7 @@ export const coffeePlaces = [
       comedian: 'Cedric The Entertainer'
     },
     {
-      name: `Junior's`,
+      name: `Junior's Restaurant`,
       type: 'Diner',
       address: '386 Flatbush Ave Ext, Brooklyn, NY 11201',
       comedian: 'Lewis Black'
@@ -73,13 +67,13 @@ export const coffeePlaces = [
       comedian: 'John Oliver'
     },
     {
-      name: `The Monkey Bar`,
+      name: `Monkey Bar`,
       type: 'Restaurant',
       address: '60 E 54th St, New York, NY 10022',
       comedian: 'Lorne Michaels'
     },
     {
-      name: `Bluestone Coffee Co.`,
+      name: `Bluestone Coffee Company`,
       type: 'Cafe',
       address: '123 Watchung Ave #2, Montclair, NJ 07043',
       comedian: 'Stephen Colbert'
@@ -89,12 +83,6 @@ export const coffeePlaces = [
       type: 'Cafe',
       address: '33 Main St, Brooklyn, NY 11201',
       comedian: 'Trevor Noah'
-    },
-    {
-      name: `John's Pancake House`,
-      type: 'Diner',
-      address: '721 Montauk Hwy, Montauk, NY 11954',
-      comedian: 'Jimmy Fallon'
     },
     {
       name: `Colony Diner`,

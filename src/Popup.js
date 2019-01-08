@@ -22,37 +22,47 @@ class Popup extends Component {
         let price = '';
         
         if (this.props.venue.details !== '') {
-            // set rating
-            rating = this.props.venue.details.reponse.venue.rating;
-
-            // create DOM el for venue img
-            let prefix = this.props.venue.details.response.venue.bestPhoto.prefix;
-            let suffix = this.props.venue.details.response.venue.bestPhoto.suffix;
-            if (prefix != null && suffix != null) {
-                let path = prefix + '300x300' + suffix;
-                imgSpan = (
-                    <span className='popup-img' style={{ backgroundImage: `url(${path})` }} role='img' aria-label={this.props.venue.name}></span>
-                )
+            
+            // check for rating
+            if (this.props.venue.details.response.venue.rating != null){
+                // set rating
+                rating = this.props.venue.details.response.venue.rating;
             }
 
-            // create DOM el for price
-            tier = this.props.venue.details.response.venue.price.tier;
-            message = this.props.venue.details.response.venue.price.message;
-            if (tier != null && message != null) {
-                let dollarSigns = [];
-                for (let i = 0; i < tier; i++) {
-                    dollarSigns.push(
-                        <FontAwesomeIcon aria-hidden title='Venue price' key={i} icon='dollar-sign' />
+            // check for bestPhoto
+            if (this.props.venue.details.response.venue.bestPhoto != null) {
+                // create DOM el for venue img
+                let prefix = this.props.venue.details.response.venue.bestPhoto.prefix;
+                let suffix = this.props.venue.details.response.venue.bestPhoto.suffix;
+                if (prefix != null && suffix != null) {
+                    let path = prefix + '300x300' + suffix;
+                    imgSpan = (
+                        <span className='popup-img' style={{ backgroundImage: `url(${path})` }} role='img' aria-label={this.props.venue.name}></span>
                     )
                 }
-                price = (
-                    <div className='price'>
-                        {dollarSigns}
-                        <span className='sr-only'>Venue price point is {message}</span>
-                    </div>
-                )
             }
-
+            
+            // check for price
+            if (this.props.venue.details.response.venue.price != null) {
+                // create DOM el for price
+                tier = this.props.venue.details.response.venue.price.tier;
+                message = this.props.venue.details.response.venue.price.message;
+                if (tier != null && message != null) {
+                    let dollarSigns = [];
+                    for (let i = 0; i < tier; i++) {
+                        dollarSigns.push(
+                            <FontAwesomeIcon aria-hidden title='Venue price' key={i} icon='dollar-sign' />
+                        )
+                    }
+                    price = (
+                        <div className='price'>
+                            {dollarSigns}
+                            <span className='sr-only'>Venue price point is {message}</span>
+                        </div>
+                    )
+                }
+            } 
+            
         }
 
         return (

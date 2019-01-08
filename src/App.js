@@ -26,12 +26,21 @@ class App extends Component {
     for (let i = 0; i < this.totalMarkers; i++) {
       this.markerRef.push(React.createRef());
     }
+    // refs for list items and close popup button
     this.listItemsRef = React.createRef();
     this.buttonEl = React.createRef();
+    // set zoom level according to screen width
+    if (window.innerWidth < 450) {
+      this.zoomlevel = 7.5;
+    } else if (window.innerWidth > 1070){
+      this.zoomlevel = 9;
+    } else {
+      this.zoomlevel = 8;
+    }
     this.state = {
-      lng: -73.0226071,
-      lat: 40.6786204,
-      zoom: 6.5,
+      lng: -73.8226071,
+      lat: 40.8786204,
+      zoom: this.zoomlevel,
       markers: [],
       selection: 'All',
       open: '',
@@ -72,9 +81,11 @@ class App extends Component {
    * Recenters the map and resets zoom level to default
    */
   recenterMap() {
-    let zoomlevel = 6.8;
+    let zoomlevel = 8;
     if (window.innerWidth < 450) {
-      zoomlevel = 6.5;
+      zoomlevel = 7.5;
+    } else if (window.innerWidth > 1070){
+      zoomlevel = 9;
     }
     // Mapbox flyTo method
     this.map.flyTo({
@@ -167,7 +178,6 @@ class App extends Component {
   rmMenuItemStyle() {
     let item_open = document.querySelector('.open');
     if (item_open != null) {
-      console.log(item_open);
       item_open.classList.toggle('open');
     }
     return item_open;
@@ -246,7 +256,6 @@ class App extends Component {
             if (response != null && response.error == null) {
               // store feature object
               const feature = response.body.features[0];
-              console.log(feature);
               // add title, description, and comedian properties
               feature.properties = {
                 title: place.name,
@@ -298,8 +307,7 @@ class App extends Component {
       * fetch venue details (if they have not already been fetched or are not currently being fetched)
       * update markers in state
    */
-  // TODO: uncomment when ready to test with fetched data again..
-  /*
+  
   componentDidUpdate() {
     if (this.state.details === '') {
       // update state of details to prevent repeated fetch calls while in progress
@@ -312,14 +320,20 @@ class App extends Component {
       markers.forEach((marker) => {
         // fetch data for venue using Foursquare's Places API search
         let prom = (
-          fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=1&ll=${marker.marker._lngLat.lat},${marker.marker._lngLat.lng}&query=${marker.name}`)
+          fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=2&ll=${marker.marker._lngLat.lat},${marker.marker._lngLat.lng}&query=${marker.name}`)
             .then((response) => {
               return response.json();
             })
             .then((myJson) => {
               //console.log(myJson);
-              console.log(myJson.response.venues[0]);
-              return myJson.response.venues[0].id;
+              let venueID = null;
+              myJson.response.venues.map((venue) => {
+                if (venue.name === marker.name) {
+                  venueID = venue.id;
+                  return venueID;
+                }
+              })
+              return venueID;
             })
         )
         proms.push(prom);
@@ -329,14 +343,15 @@ class App extends Component {
         markers.forEach((marker, index) => {
           // fetch details using proms[index], which should be the venue id
           // then set the marker.details to the response
-          fetch(`https://api.foursquare.com/v2/venues/${proms[index]}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180923`)
+          if (proms[index] != null) {
+            fetch(`https://api.foursquare.com/v2/venues/${proms[index]}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180923`)
             .then((response) => {
               return response.json();
             })
             .then((myJson) => {
-              console.log(myJson);
               marker.details = myJson;
             })
+          }
         })
         // update array of markers in state
         this.setState({
@@ -350,7 +365,6 @@ class App extends Component {
       })
     }
   }
-  */
 
  
   render() {

@@ -12,7 +12,7 @@ class Select extends Component {
 
         return (
             <nav className='select-container' aria-labelledby="filter-list">
-                <label for='filter-list'>
+                <label htmlFor='filter-list'>
                     Venues visited in the show<span id='title'>Comedians in Cars Getting Coffee</span>
                 </label>
                 <select
