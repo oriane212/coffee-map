@@ -11,8 +11,10 @@ import Popup from './Popup';
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
 
 // Foursquare IDs for this app
+//
+// TODO: After review, reset Client Secret in Foursquare and push to GitHub with empty Client Secret
+//
 const CLIENT_ID = 'PPYFQDE4ES3RAZHYQRKXI0RPWURQ1RPIAIU3VHENMNSKEX1S';
-// TODO: make private?
 const CLIENT_SECRET = 'XAWDVQKUAC1OBT5JUSALYUJTN34FA3H5YZPTFN3145OUM5CL';
 
 
@@ -330,8 +332,8 @@ class App extends Component {
               myJson.response.venues.map((venue) => {
                 if (venue.name === marker.name) {
                   venueID = venue.id;
-                  return venueID;
                 }
+                return venueID;
               })
               return venueID;
             })
