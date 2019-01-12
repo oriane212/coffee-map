@@ -46,7 +46,8 @@ class App extends Component {
       markers: [],
       selection: 'All',
       open: '',
-      details: ''
+      details: '',
+      error: false
     };
 
     this.itemClick = this.itemClick.bind(this);
@@ -240,6 +241,17 @@ class App extends Component {
       style: 'mapbox://styles/mapbox/light-v9',
       center: [lng, lat],
       zoom
+    })
+    .on('data', () => {
+        this.setState({
+          error: false
+        })
+    })
+    .on('error', (error) => {
+      console.log(error);
+      this.setState({
+        error: true
+      })
     });
     // create geocoding client
     const geocodingClient = mbxGeocoding({ accessToken: mapboxgl.accessToken });
@@ -266,8 +278,12 @@ class App extends Component {
               }
               return feature;
             } else {
-              return;
+              return place.name;
             }
+          })
+          .catch((error) => {
+            console.log(error);
+            return place.name;
           })
       )
       // store each promise in promises array
@@ -280,21 +296,27 @@ class App extends Component {
       let i = 0;
       // create a marker instance for each feature object
       promises.forEach((feature) => {
-        // pass custom marker DOM element attached to marker reference at index
-        let marker = new mapboxgl.Marker(this.markerRef[i].current)
+        // if promise resolved, pass custom marker DOM element attached to marker reference at index
+        if (typeof feature === 'object') {
+          let marker = new mapboxgl.Marker(this.markerRef[i].current)
           .setLngLat(feature.geometry.coordinates)
-        // create object containing marker instance and venue data
-        let markerData = {
-          name: feature.properties.title,
-          category: feature.properties.description,
-          address: feature.place_name,
-          comedian: feature.properties.comedian,
-          marker: marker,
-          vID: '',
-          details: ''
+          // create object containing marker instance and venue data
+          let markerData = {
+            name: feature.properties.title,
+            category: feature.properties.description,
+            address: feature.place_name,
+            comedian: feature.properties.comedian,
+            marker: marker,
+            vID: '',
+            details: ''
+          }
+          // push markerData to array of markers
+          markers.push(markerData);
+        // alert user if promise was rejected
+        } else {
+          alert(`There was a problem loading data for ${feature}.`)
         }
-        // push markerData to array of markers
-        markers.push(markerData);
+        
         i++;
       })
       // store array of markers in state
@@ -319,6 +341,7 @@ class App extends Component {
       console.log('fetching');
       let proms = [];
       let markers = this.state.markers;
+      let rejected = 0;
       markers.forEach((marker) => {
         // fetch data for venue using Foursquare's Places API search
         let prom = (
@@ -336,6 +359,11 @@ class App extends Component {
                 return venueID;
               })
               return venueID;
+            })
+            .catch((error) => {
+              console.log(error);
+              rejected += 1;
+              return null;
             })
         )
         proms.push(prom);
@@ -364,11 +392,19 @@ class App extends Component {
           details: 'fetched'
         })
         console.log('fetched');
+        // if any promises were rejected, alert the user
+        if (rejected > 0) {
+          if (rejected === 1) {
+            rejected = `${rejected} venue`;
+          } else {
+            rejected = `${rejected} venues`;
+          }
+          alert(`There was a problem loading details for ${rejected}.`);
+        }
       })
     }
   }
 
- 
   render() {
     // filter and add markers to map
     this.state.markers.forEach((markerObj) => {
@@ -393,9 +429,17 @@ class App extends Component {
     // initialize counter for creating marker elements
     let n = 0;
 
+    // alert user if map is unable to load
+    let alertDiv = '';
+    if (this.state.error) {
+      alertDiv = (<div className='alert'>There was a problem loading the map</div>)
+    }
+
     return (
       <Fragment>
-        <section role='presentation' aria-label="Map view of listed venues" id="map"></section>
+        {alertDiv}
+        <section role='presentation' aria-label="Map view of listed venues" id="map">
+        </section>
         <section aria-label="Filterable list of venues" className='sidebar pad2'>
           <Select selection={this.state.selection} onSelection={this.onSelection}></Select>
           <List listRef={this.listItemsRef} selection={this.state.selection} itemClick={this.itemClick} markers={this.state.markers.length !== 0 ? this.state.markers : []}></List>

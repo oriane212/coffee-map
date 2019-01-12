@@ -119,6 +119,7 @@ function checkValidServiceWorker(swUrl, config) {
       console.log(
         'No internet connection found. App is running in offline mode.'
       );
+      alert('No internet connection found. App is running in offline mode.');
     });
 }
 
