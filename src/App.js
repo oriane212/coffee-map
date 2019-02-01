@@ -333,7 +333,7 @@ class App extends Component {
    */
   
   componentDidUpdate() {
-    if (this.state.details === '') {
+    if (this.state.details === '' && this.state.markers[0].details !== '') {
       // update state of details to prevent repeated fetch calls while in progress
       this.setState({
         details: 'fetching'
