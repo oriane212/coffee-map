@@ -3,6 +3,8 @@ Coffee Map
 ===============================
 Map of places visited in Comedians in Cars Getting Coffee
 
+[View the app!](https://comedians-in-cars-coffee-map.herokuapp.com/)
+
 ![demo of filtering and selecting venues](coffeeMap.gif)
 
 ## Dependencies
