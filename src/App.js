@@ -34,7 +34,7 @@ class App extends Component {
     // set zoom level according to screen width
     if (window.innerWidth < 450) {
       this.zoomlevel = 7.5;
-    } else if (window.innerWidth > 1070){
+    } else if (window.innerWidth > 1070) {
       this.zoomlevel = 9;
     } else {
       this.zoomlevel = 8;
@@ -46,7 +46,9 @@ class App extends Component {
       markers: [],
       selection: 'All',
       open: '',
-      details: '',
+      fetchstarted: false,
+      fetchdone: false,
+      details: 'fetching venue IDs',
       error: false
     };
 
@@ -87,7 +89,7 @@ class App extends Component {
     let zoomlevel = 8;
     if (window.innerWidth < 450) {
       zoomlevel = 7.5;
-    } else if (window.innerWidth > 1070){
+    } else if (window.innerWidth > 1070) {
       zoomlevel = 9;
     }
     // Mapbox flyTo method
@@ -139,7 +141,7 @@ class App extends Component {
   markerClick(venue_name = '', event = '') {
     // remove any already 'open' marker styles
     this.rmMarkerStyle();
- 
+
     let markerObj = '';
     let markerEl = '';
     // if the marker was actually clicked, simulate its corresponding menu item click
@@ -242,17 +244,17 @@ class App extends Component {
       center: [lng, lat],
       zoom
     })
-    .on('data', () => {
+      .on('data', () => {
         this.setState({
           error: false
         })
-    })
-    .on('error', (error) => {
-      console.log(error);
-      this.setState({
-        error: true
       })
-    });
+      .on('error', (error) => {
+        console.log(error);
+        this.setState({
+          error: true
+        })
+      });
     // create geocoding client
     const geocodingClient = mbxGeocoding({ accessToken: mapboxgl.accessToken });
     // initialize an array to store promises for geocoded addresses
@@ -299,7 +301,7 @@ class App extends Component {
         // if promise resolved, pass custom marker DOM element attached to marker reference at index
         if (typeof feature === 'object') {
           let marker = new mapboxgl.Marker(this.markerRef[i].current)
-          .setLngLat(feature.geometry.coordinates)
+            .setLngLat(feature.geometry.coordinates)
           // create object containing marker instance and venue data
           let markerData = {
             name: feature.properties.title,
@@ -312,11 +314,11 @@ class App extends Component {
           }
           // push markerData to array of markers
           markers.push(markerData);
-        // alert user if promise was rejected
+          // alert user if promise was rejected
         } else {
           alert(`There was a problem loading data for ${feature}.`)
         }
-        
+
         i++;
       })
       // store array of markers in state
@@ -331,78 +333,108 @@ class App extends Component {
       * fetch venue details (if they have not already been fetched or are not currently being fetched)
       * update markers in state
    */
-  
+
   componentDidUpdate() {
-    if (this.state.details === '' && this.state.markers[0].details !== '') {
-      // update state of details to prevent repeated fetch calls while in progress
+
+    let markers = this.state.markers;
+    let rejected = 0;
+
+    if (!this.state.fetchstarted) {
+
       this.setState({
-        details: 'fetching'
-      })
-      console.log('fetching');
-      let proms = [];
-      let markers = this.state.markers;
-      let rejected = 0;
-      markers.forEach((marker) => {
-        // fetch data for venue using Foursquare's Places API search
-        let prom = (
-          fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=2&ll=${marker.marker._lngLat.lat},${marker.marker._lngLat.lng}&query=${marker.name}`)
-            .then((response) => {
-              return response.json();
-            })
-            .then((myJson) => {
-              //console.log(myJson);
-              let venueID = null;
-              myJson.response.venues.map((venue) => {
-                if (venue.name === marker.name) {
-                  venueID = venue.id;
-                }
-                return venueID;
-              })
-              return venueID;
-            })
-            .catch((error) => {
-              console.log(error);
-              rejected += 1;
-              return null;
-            })
-        )
-        proms.push(prom);
+        fetchstarted: true
       })
 
-      Promise.all(proms).then((proms) => {
-        markers.forEach((marker, index) => {
-          // fetch details using proms[index], which should be the venue id
-          // then set the marker.details to the response
-          if (proms[index] != null) {
-            fetch(`https://api.foursquare.com/v2/venues/${proms[index]}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180923`)
-            .then((response) => {
-              return response.json();
+      if (this.state.details === 'fetching venue IDs') {
+        // update state of details to prevent repeated fetch calls while in progress
+        
+        console.log('fetching');
+        let proms = [];
+
+        markers.forEach((marker) => {
+          // fetch data for venue using Foursquare's Places API search
+          let prom = (
+            fetch(`https://api.foursquare.com/v2/venues/search?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180323&limit=2&ll=${marker.marker._lngLat.lat},${marker.marker._lngLat.lng}&query=${marker.name}`)
+              .then((response) => {
+                return response.json();
+              })
+              .then((myJson) => {
+                //console.log(myJson);
+                console.log('a fetch for venue id by lat-lng was made');
+                let venueID = null;
+                myJson.response.venues.map((venue) => {
+                  if (venue.name === marker.name) {
+                    venueID = venue.id;
+                    //venueID = { name: marker.name, v_id: venue.id};
+                    marker.vID = venue.id;
+                  }
+                  return venueID;
+                })
+                return venueID;
+              })
+              .catch((error) => {
+                console.log(error);
+                rejected += 1;
+                return null;
+              })
+          )
+          proms.push(prom);
+        });
+
+        Promise.all(proms).then(() => {
+
+          this.setState({
+            details: 'fetching venue details'
+          })
+
+        }).then(() => {
+
+          let proms2 = [];
+
+          markers.forEach((marker) => {
+            if (marker.vID !== '') {
+              let prom2 = (
+                fetch(`https://api.foursquare.com/v2/venues/${marker.vID}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&v=20180923`)
+                  .then((response) => {
+                    return response.json();
+                  })
+                  .then((myJson) => {
+                    console.log('a fetch for details by venue id was made');
+                    marker.details = myJson;
+                    return myJson;
+                  })
+
+              )
+              proms2.push(prom2);
+            }
+          })
+
+          Promise.all(proms2).then(() => {
+            this.setState({
+              markers: markers
             })
-            .then((myJson) => {
-              marker.details = myJson;
+            // update state of details when all fetching is complete
+            this.setState({
+              details: 'fetched'
             })
-          }
+            console.log('fetched');
+            // if any promises were rejected, alert the user
+            if (rejected > 0) {
+              if (rejected === 1) {
+                rejected = `${rejected} venue`;
+              } else {
+                rejected = `${rejected} venues`;
+              }
+              alert(`There was a problem loading details for ${rejected}.`);
+            }
+          })
+
         })
-        // update array of markers in state
-        this.setState({
-          markers: markers
-        })
-        // update state of details when all fetching is complete
-        this.setState({
-          details: 'fetched'
-        })
-        console.log('fetched');
-        // if any promises were rejected, alert the user
-        if (rejected > 0) {
-          if (rejected === 1) {
-            rejected = `${rejected} venue`;
-          } else {
-            rejected = `${rejected} venues`;
-          }
-          alert(`There was a problem loading details for ${rejected}.`);
-        }
-      })
+
+      }
+
     }
+
   }
 
   render() {
@@ -461,7 +493,7 @@ class App extends Component {
         }
       </Fragment>
     );
-    
+
   }
 }
 
